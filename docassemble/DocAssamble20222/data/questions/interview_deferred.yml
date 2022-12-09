@@ -1,0 +1,250 @@
+---
+modules:
+  - docassemble.base.util
+---
+objects: 
+  - participant: Individual
+  - alternate_payee: Individual
+  - defendant: Individual
+  - defendant_respondent: Individual
+  - filing_party: Individual
+  - petitioner: Individual
+  - plaintiff: Individual
+  - plaintiff_petitioner: Individual
+  - respondent: Individual
+  - filing_party_add1: Individual
+  - filing_party_add2: Individual
+---
+question: |
+  Where do you live?
+fields: 
+  - Please select your State: document
+    datatype: radio
+    choices:
+      - california
+      - northdakota
+      - iowa
+      - Kansas
+      - missouri
+      - New Jersey
+      - New York 
+---
+question: |
+  Role of Filer.
+fields: 
+  - Please select role of filer: role_of_filier
+    choices:
+      - In Pro Per
+      - Attorney for Petitioner
+      - Attorney for Respondent
+      - Limited Scope QDRO Attorney
+      - EC 730 Neutral QDRO Expert
+   
+---
+question: |
+  In which County do you live in?
+fields:
+  - County: county
+---
+question: |
+  Participant Name
+fields:
+  - First Name: participant.name.first
+  - Middile Name: participant.name.middle
+  - Last Name: participant.name.last
+---
+question: |
+  Please fill participant address.
+fields:
+  - Street address: participant.address.address
+  - Unit: participant.address.unit
+    required: False
+  - City: participant.address.city
+  - state: participant.address.state
+  - Zip: participant.address.zip
+---
+question: |
+  Alternate Payee Name
+fields:
+  - First Name: alternate_payee.name.first
+  - Middile Name: alternate_payee.name.middle
+  - Last Name: alternate_payee.name.last
+---
+question: |
+  Please fill alternate payee address.
+fields:
+  - Street address: alternate_payee.address.address
+  - Unit: alternate_payee.address.unit
+    required: False
+  - City: alternate_payee.address.city
+  - state: alternate_payee.address.state
+  - Zip: alternate_payee.address.zip
+---
+question: |
+  Assignment Date
+fields:
+  - Assignment Date: assignment_date
+    datatype: date
+---
+question: |
+  Awarding
+fields:
+  - Awarding: awarding
+    datatype: radio
+    choices:
+      - Percentage to the Alternate Payee
+      - FIXED DOLLAR AMOUNT WITH GAINS OR LOSSES
+      - FIXED DOLLAR AMOUNT—WITH NO GAINS OR LOSSES
+      - PERCENTAGE BUT EXCLUDING PRE-MARITAL BALANCE
+      - PERCENTAGE, BUT EXCLUDING PRE-MARITAL BALANCE WITH PASSIVE GROWTH
+      - PERCENTAGE OF AN EMPLOYEE STOCK OWNERSHIP PLAN (ESOPs)
+---
+question: |
+  Date of Marriage
+fields:
+  - Date of Marriage: date_of_marriage
+    datatype: date
+---
+question: |
+  Dollar
+fields:
+  - Dollar: dollar
+    datatype: integer
+---
+
+question: |
+  Percentage
+fields:
+  - Percentage: percentage
+---
+question: |
+  State
+fields:
+  - State: state
+---
+question: |
+  Filing Party Name
+fields:
+  - First Name: filing_party.name.first
+  - Middile Name: filing_party.name.middle
+  - Last Name: filing_party.name.last
+---
+question: |
+  Petitioner Name
+fields:
+  - First Name: petitioner.name.first
+  - Middile Name: petitioner.name.middle
+  - Last Name: petitioner.name.last
+---
+question: |
+  Case Number
+fields:
+  - Case Number: case_number
+    datatype: number
+---
+question: |
+  Bar Number
+fields:
+  - Bar Number: bar_number
+    datatype: number
+---
+question: |
+  Document Title
+fields:
+  - Document Title: document_title
+---
+question: |
+  Filing Party Address 1
+
+fields:
+  - Street address: filing_party_add1.address.address
+  - Unit: filing_party_add1.address.unit
+    required: False
+  - City: filing_party_add1.address.city
+  - state: filing_party_add1.address.state
+  - Zip: filing_party_add1.address.zip
+---
+question: |
+  Filing Party Address 2
+
+fields:
+  - Street address: filing_party_add2.address.address
+  - Unit: filing_party_add2.address.unit
+    required: False
+  - City: filing_party_add2.address.city
+  - state: filing_party_add2.address.state
+  - Zip: filing_party_add2.address.zip
+---
+question: |
+  Filing Party Email
+fields:
+  - Filing Party Email: filing_party_email
+    datatype: email
+---
+question: |
+  Filing Party Phone
+fields:
+  - Filing Party Phone: filing_party_phone
+---
+question: |
+  Judicial District
+fields:
+  - Judicial District: judicial_district
+---
+question: |
+  Plan Number
+fields:
+  - Plan Number: plan_name
+---
+question: |
+  Respondent Name
+fields:
+  - First Name: respondent.name.first
+  - Middile Name: respondent.name.middle
+  - Last Name: respondent.name.last
+---
+question: |
+  Defendant Name
+fields:
+  - First Name: defendant.name.first
+  - Middile Name: defendant.name.middle
+  - Last Name: defendant.name.last
+---
+question: |
+  Defendant respondent Name
+fields:
+  - First Name: defendant_respondent.name.first
+  - Middile Name: defendant_respondent.name.middle
+  - Last Name: defendant_respondent.name.last
+---
+question: |
+  Document Type
+fields:
+  - Document Type: document_type
+---
+question: |
+  Plaintiff Name
+fields:
+  - First Name: plaintiff.name.first
+  - Middile Name: plaintiff.name.middle
+  - Last Name: plaintiff.name.last
+---
+question: |
+  Plaintiff Petitioner Name
+fields:
+  - First Name: plaintiff_petitioner.name.first
+  - Middile Name: plaintiff_petitioner.name.middle
+  - Last Name: plaintiff_petitioner.name.last
+---
+question: |
+  Court
+fields:
+  - Court: court
+---
+mandatory: True
+question: |
+  Here is your document.
+attachment: 
+  docx template file: deferred_compensation_combined.docx
+ 
+  

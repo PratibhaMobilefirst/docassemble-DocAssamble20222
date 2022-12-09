@@ -1,0 +1,148 @@
+metadata: 
+  title: |
+    Dashboard
+  short title: |
+    Thanks
+  
+---
+mandatory: True
+question: |
+  Your fruit inventory
+subquestion: |
+  This describes your fruit
+  collection.
+  
+  Fruit  | How many
+  -------|---------
+  Apple  | 4
+  Orange | 3
+  Pear   | 6
+
+html: |  
+field: target_variable
+buttons:
+  - Create new QDRO
+css: |
+  <style>
+    .btn-da {
+    position: absolute;
+    top: 15vh;
+    right: 10vw;
+    }
+  </style>
+  
+---
+mandatory: True
+question: |
+  Choose document:
+fields:
+  - Choose Documents: document
+    choices:
+      - california
+      - North Dakota
+  - Choose Documents: pension 
+    choices:
+      - pre_retired
+      - Pension Pre-Retirement (Shared)
+  - Document : court
+    show if:
+      variable: document
+      is: california
+  - Filing Party Name: filing_party_name
+    show if:
+      variable: document
+      is: california
+  - Filing Party Address 1 : filing_party_add1
+    show if:
+      variable: pension
+      is: pre_retired
+  - Bar Number : bar_number
+    show if:
+      variable: document
+      is: california
+  - Case Number : case_number
+    show if:
+      variable: document
+      is: california
+  - County : county
+    show if:
+      variable: document
+      is: california
+  
+  - Plaintiff Petitioner Name : plaintiff_petitioner_name
+    show if:
+      variable: pension
+      is: pre_retired
+  - Defendant Name : defendant_name
+    show if:
+      variable: pension
+      is: pre_retired
+  - Document Title : separate
+    show if:
+      variable: pension
+      is: pre_retired
+  - Document Type : document_type
+    show if:
+      variable: pension
+      is: pre_retired
+  - Updated Date : updated_date
+    show if:
+      variable: pension
+      is: pre_retired
+  - Defendant Respondent Name : defendant_respondent_name
+    show if:
+      variable: pension
+      is: Pension Pre-Retirement (Shared)
+  - Judicial District : judicial_district
+    show if:
+      variable: pension
+      is: Pension Pre-Retirement (Shared)
+  - Payment Model : payment_model
+    show if:
+      variable: pension
+      is: pre_retired
+  - Plaintiff Name : plaintiff_name
+    show if:
+      variable: pension
+      is: Pension Pre-Retirement (Shared)
+  - Plan_name : Plan_name
+    show if:
+      variable: document
+      is: california
+  - Filing Party Address 2 : filing_party_add2
+    show if:
+      variable: document
+      is: california
+  - Filing Party Email : filing_party_email
+    show if:
+      variable: document
+      is: california
+  - Filing Party Phone Number : filing_party_phone
+    show if:
+      variable: pension
+      is: Pension Pre-Retirement (Shared)
+  - Petitioner Name : petitioner_name
+    show if:
+      variable: pension
+      is: Pension Pre-Retirement (Shared)
+
+---
+
+mandatory: True
+question: |
+  Here is your document.
+attachment: 
+  docx template file: combined.docx
+---
+mandatory: True
+question: |
+  Here is your document.
+attachment: 
+  docx template file: california_template.docx
+---
+mandatory: True
+question: |
+  Here is your document.
+attachment: 
+  docx template file: North_Dakota_template.docx
+---

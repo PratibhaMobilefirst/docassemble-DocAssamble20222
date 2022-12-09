@@ -1,0 +1,181 @@
+---
+question: |
+  Where do you live?
+fields: 
+  - Choose State: document
+    datatype: radio
+    choices:
+      - california
+      - northdakota
+      - iowa
+      - Kansas
+      - missouri
+      - New Jersey
+      - New York 
+---
+question: |
+  In which County do you live in?
+fields:
+  - County: county
+---
+question: |
+  Filing Party Name
+fields:
+  - Filing Party Name: filing_party_name
+---
+question: |
+  Petitioner Name
+fields:
+  - Petitioner Name: petitioner_name
+---
+question: |
+  Case Number
+fields:
+  - Case Number: case_number
+---
+question: |
+  Bar Number
+fields:
+  - Bar Number: bar_number
+---
+question: |
+  Document Title
+fields:
+  - Document Title: document_title
+---
+question: |
+  Filing Party Address 1
+fields:
+  - Filing Party Address 1: filing_party_add1
+---
+question: |
+  Filing Party Address 2
+fields:
+  - Filing Party Address 2: filing_party_add2
+---
+question: |
+  Filing Party Email
+fields:
+  - Filing Party Email: filing_party_email
+---
+question: |
+  Filing Party Phone
+fields:
+  - Filing Party Phone: filing_party_phone
+---
+question: |
+  Judicial District
+fields:
+  - Judicial District: judicial_district
+---
+question: |
+  Plan Number
+fields:
+  - Plan Number: plan_name
+---
+question: |
+  Respondent Name
+fields:
+  - Respondent Name: respondent_name
+---
+question: |
+  Defendant Name
+fields:
+  - Defendant Name: defendant_name
+---
+question: |
+  Defendant respondent Name
+fields:
+  - Defendant respondent Name: defendant_respondent_name
+---
+question: |
+  Document Type
+fields:
+  - Document Type: document_type
+---
+question: |
+  Payment Model
+fields:
+  - Payment Model: payment_model
+    datatype: radio
+    choices:
+      - Separate Interest
+      - Shared Interest
+---
+question: |
+  Pension
+fields:
+  - Pension: pension
+    datatype: radio
+    choices:
+      - pre_retired
+      - retired
+  - Select One: pension
+    show if: 
+      variable: pension
+      is: pre_retired
+    datatype: radio
+    choices:
+      - shared
+      - separate 
+---
+question: |
+  Plaintiff Name
+fields:
+  - Plaintiff Name: plaintiff_name
+  
+---
+question: |
+  Plaintiff Petitioner Name
+fields:
+  - Plaintiff Petitioner Name: plaintiff_petitioner_name
+---
+question: |
+  Court
+fields:
+  - Court: court
+---
+question: |
+  Updated Date
+fields:
+  - html: |
+      The date and time today is
+      <span class="mytime" id="today_time"></span>.
+  - "Updated Date": updated_date
+    datatype: date
+css: |
+  <style>
+    .mytime {
+       color: green;
+    }
+  </style>
+script: |
+  <script>
+    $("#today_time").html(Date());
+  </script>
+  
+---
+interview help:
+  heading: |
+    % if interface() == 'Name':
+    About this text messaging service
+    % else:
+    About this web site
+    % endif
+  content: |
+    Answer each question.  At the end, you may be given a document
+    that you can save.
+    
+    % if interface() == 'County':
+    If you see a word written in green text, you can click on it to
+    see more information about the word.  You can try this out here 
+    to find out more about rhododendron plants.
+    % endif
+---
+mandatory: True
+question: |
+  Here is your document.
+attachment: 
+  docx template file: combined.docx
+ 
+  

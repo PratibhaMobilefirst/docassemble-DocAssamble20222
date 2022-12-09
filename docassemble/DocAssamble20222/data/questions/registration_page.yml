@@ -1,0 +1,165 @@
+---
+metadata: 
+  title: |
+    Registration Page
+  short title: |
+    Thanks
+  show login: False
+  allow registration: True
+---
+objects:
+  - user: Individual
+---
+mandatory: True
+field: registration_main
+question: |
+  Member Registration
+subquestion: | 
+  Already Registered? [sign in](https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/signIn_signUp.yml)
+  > Required fields are marked as <span class = "astric">*</span>
+  <a href="https://www.google.com" data-title="Hyperlink">hover on me</a>
+css: |
+  <style>
+    .astric {
+       color: red;
+    }
+     [data-title]:hover:after {
+     opacity: 1;
+     transition: all 0.1s ease 0.5s;
+     visibility: visible;
+    }
+    [data-title]:after {
+    content: attr(data-title);
+    background-color:white;
+    color: black;
+    font-size: 18px;
+    position: absolute;
+    padding: 5px;
+    bottom: -2em;
+    left: 10%;
+    white-space: nowrap;
+    box-shadow: 1px 1px 3px #222222;
+    opacity: 0;
+    z-index: 99999;
+    visibility: hidden;
+    }
+    [data-title] {
+    position: relative;
+    }  
+  </style>
+fields:
+  - Member Name: member_name
+    required: false
+    hint: EugeniaHopper
+  - First Name: f_name
+    help: |
+      Use only letters and
+      underscores.
+  - Middle Name: m_name
+    required: false
+  - Last Name: l_name
+  - Address Line1: add_line1
+    address autocomplete: True
+  - Address Line2: add_line2
+    address autocomplete: True
+    required: false
+  - City: city
+  - State: state
+    code: |
+      states_list()
+  - Zip Code: zip_code
+  - User Type: user_type
+    choices:
+      - Lawyer: lawyer
+      - User: user
+  - E-mail Address: email
+    datatype: email
+  - Phone: user.phone_country
+    required: false
+    datatype: integer
+  - Date of Birth: dob
+    hint: MM/DD/YYYY
+    datatype: date 
+
+---
+mandatory: True
+field: registration_confirm
+question: |
+  Member Registration
+subquestion: | 
+  Confirmation Page
+fields:
+  - Member Name: member_name
+    required: false
+    disable others: True
+  - First Name: f_name
+  - Middle Name: m_name
+    required: false
+  - Last Name: l_name
+  - Address Line1: add_line1
+    address autocomplete: True
+  - Address Line2: add_line2
+    address autocomplete: True
+    required: false
+  - City: city
+  - State: state
+    code: |
+      states_list()
+  - Zip Code: zip_code
+  - User Type: user_type
+    choices:
+      - Lawyer: lawyer
+      - User: user
+  - E-mail Address: email
+    datatype: email
+  - Phone: user.phone_country
+    required: false
+    datatype: integer
+  - Date of Birth: dob
+    hint: MM/DD/YYYY
+    datatype: date
+    disable others:
+      - member_name
+back button: True
+continue button label: Confirm
+back button label: |
+  Back to edit
+---
+field: password_section
+question: | 
+  Confirm your password 
+fields:
+  - Password: password
+    datatype: password
+  - note: |
+      ** * *Password Strength*: Weak**.
+      > Use 6-20 characters. Letters are case-sensitive.
+      ### You may not use:
+      * Sequences (e.g., 12345 or 11111)
+      * Personal info (SSN, phone #, DOB)
+      * A password you've used before
+  - Confirm Password: confirm_password
+    datatype: password
+validation code: |
+  if not len(password)>=6 and len(password)<=20:
+    validation_error('Password length must be between 6-20.')
+  if not password == confirm_password:
+    validation_error("Password didn't match")
+  
+---
+initial: True
+code: |
+  if len(password)>=6 and len(password)<=20:
+    if password == confirm_password:
+      welcome
+
+
+---
+
+question: |
+  Welcome **${member_name}** You have successfully registered yourself.
+  Please [sign in](https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/signIn_signUp.yml#page1).
+event: welcome
+---
+
+

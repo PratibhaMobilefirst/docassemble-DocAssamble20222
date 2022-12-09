@@ -1,0 +1,58 @@
+---
+metadata: 
+  title: |
+    Sign in
+  short title: |
+    Thanks
+  show login: False
+  auto login: google
+
+---
+modules:
+  - .api
+---
+objects:
+  - user: Individual
+---
+mandatory: True 
+question: |
+  Please sign in
+fields: 
+  - html: |
+      <div class="link">
+      <a href="https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/registration_page.yml">New here? Register</a></div>
+  - Email: user.name.email
+    datatype: email
+  - html: |
+      <div class="link">
+      <a href="https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/forgot_password.yml">Forgot Password</a></div>
+       
+  - Password: user.name.password
+    datatype: password
+continue button label: Sign in
+validation code: |
+  if not (user.name.email == "mobilefirst@gmail.com" and user.name.password == "Mobilefirst@123"):
+    validation_error('Email or Password is incorrect, Please try again.')
+    
+css: |
+  <style>
+    .link{
+    text-align:right;
+    padding-top: calc(0.375rem + 1px);
+    padding-bottom: calc(0.375rem + 1px);
+    margin-bottom: 0;
+    font-size: inherit;
+    line-height: 1.5;
+    }
+  </style>
+---
+mandatory: True
+question: |
+  [Click here to go to dashboard](${ url_of('https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/dashboard.yml') })
+event: google
+---
+initial: True
+code: |
+  if user.name.email == "mobilefirst@gmail.com" and user.name.password == "Mobilefirst@123":
+    google
+
