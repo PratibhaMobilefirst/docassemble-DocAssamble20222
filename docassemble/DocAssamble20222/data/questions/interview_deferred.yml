@@ -2,6 +2,7 @@
 modules:
   - docassemble.base.util
 ---
+
 objects: 
   - participant: Individual
   - alternate_payee: Individual
@@ -15,8 +16,11 @@ objects:
   - filing_party_add1: Individual
   - filing_party_add2: Individual
 ---
+field: choices
 question: |
   Where do you live?
+subquestion: |
+  [Read More](${ url_of('dispatch') }){:target="_blank"}
 fields: 
   - Please select your State: document
     datatype: radio
@@ -32,14 +36,21 @@ fields:
 question: |
   Role of Filer.
 fields: 
-  - Please select role of filer: role_of_filier
+  - Please select role of filer: role_of_filer
     choices:
       - In Pro Per
       - Attorney for Petitioner
       - Attorney for Respondent
       - Limited Scope QDRO Attorney
-      - EC 730 Neutral QDRO Expert
-   
+      - EC 730 Neutral QDRO Expert  
+---
+field: petitioner_event
+question: |
+  Petitioner Name
+fields:
+  - First Name: petitioner.name.first
+  - Middile Name: petitioner.name.middle
+  - Last Name: petitioner.name.last
 ---
 question: |
   In which County do you live in?
@@ -122,20 +133,15 @@ question: |
 fields:
   - State: state
 ---
+field: filing_party_event
 question: |
-  Filing Party Name
+  Who will be filing this with the court?
 fields:
   - First Name: filing_party.name.first
   - Middile Name: filing_party.name.middle
   - Last Name: filing_party.name.last
 ---
-question: |
-  Petitioner Name
-fields:
-  - First Name: petitioner.name.first
-  - Middile Name: petitioner.name.middle
-  - Last Name: petitioner.name.last
----
+
 question: |
   Case Number
 fields:
@@ -192,10 +198,16 @@ fields:
   - Judicial District: judicial_district
 ---
 question: |
+  Division Number
+fields:
+  - Division Number : division_number
+---
+question: |
   Plan Number
 fields:
   - Plan Number: plan_name
 ---
+field: respondent_event
 question: |
   Respondent Name
 fields:
@@ -246,5 +258,10 @@ question: |
   Here is your document.
 attachment: 
   docx template file: deferred_compensation_combined.docx
- 
-  
+---
+mandatory: True
+code: |
+  choices 
+  petitioner_event
+  respondent_event
+  filing_party_event

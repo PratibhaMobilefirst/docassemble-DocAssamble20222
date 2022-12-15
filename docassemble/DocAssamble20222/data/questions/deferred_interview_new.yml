@@ -1,0 +1,246 @@
+---
+modules:
+  - docassemble.base.util
+---
+objects: 
+  - petitioner: Individual
+  - respondent: Individual
+  - participant: Individual
+  - alternate_payee: Individual
+  - filing_party: Individual
+---
+mandatory: True
+question: |
+  Where do you live?
+fields: 
+  - Please select your State: document
+    datatype: radio
+    choices:
+      - California
+      - North Dakota
+      - Iowa
+      - Kansas
+      - Missouri
+      - New Jersey
+      - New York 
+---
+mandatory: True
+question: |
+  What is the filing party's role in the case? For example, are you the attorney for the plaintiff? Or a limited scope attorney for the respondent? 
+fields: 
+  - Role in the case: role
+    datatype: radio
+    choices:
+      - Petitioner/Plaintiff
+      - Respondent/Defendant
+      - Attorney
+  - Select role in the case: role
+    datatype: radio
+    choices:
+      - Attorney for Petitioner
+      - Attorney for Respondent
+      - Limited Scope QDRO Attorney
+      - EC 730 Neulaintral QDRO Expert
+    show if: 
+      variable: role
+      is: Attorney
+---
+question: |
+  Who will be filing this with the court?
+fields:
+  - First Name: filing_party.name.first
+  - Middile Name: filing_party.name.middle
+  - Last Name: filing_party.name.last 
+  - Email: filing_party.email
+    datatype: email
+  - Bar Number: bar_number
+    datatype: number
+  - Phone: filing_party.phone
+
+---
+code: |
+  if role == "Petitioner/Plaintiff":
+    role_of_filer = "In Pro Per"
+---
+question: |
+  Filing Party Address
+fields:
+  - Street address: filing_party.address.address
+  - Unit: filing_party.address.unit
+    required: False
+  - City: filing_party.address.city
+  - state: filing_party.address.state
+  - Zip: filing_party.address.zip
+---
+question: |
+  What is the Petitioner/Plaintiff's Name?
+fields:
+  - First Name: petitioner.name.first
+  - Middile Name: petitioner.name.middle
+  - Last Name: petitioner.name.last
+---
+question: |
+  What is the Respondent/Defendant's name?
+fields:
+  - First Name: respondent.name.first
+  - Middile Name: respondent.name.middle
+  - Last Name: respondent.name.last
+---
+question: |
+  In what county was your divorce? (The QDRO is almost always filed in the same county and courthouse as your divorce judgment.)
+fields:
+  - County: county
+---
+
+question: |
+  Court
+fields:
+  - Court: court
+---
+question: |
+  Division Number
+fields:
+  - Division number: division_number
+---
+question: |
+  What is the judicial district?
+fields:
+  - Judicial District: judicial_district
+---
+question: |
+  Case Number
+fields:
+  - Case Number: case_number
+---
+question: |
+  What is the retirement plan name? (Please reference a retirement statement, if you have one, to ensure that the plan doesn't reject your order for using the wrong name. Some companies can have dozens of plans.)
+fields:
+  - Plan Name: plan_name
+---
+question: |
+  Please select the employee (participant) spouse for this retirement plan.            "Petitioner-Plaintiff" or "Defendant-Respondent"
+fields:
+  - Who is psrticipant: who_is_participant
+    datatype: radio
+    choices:
+      - Petitioner-Plaintiff
+      - Defendant-Respondent
+  - note: |
+      What's the participant name?
+    show if: 
+      variable: who_is_participant
+      is: Petitioner-Plaintiff
+  - First Name: participant.name.first
+    show if:
+      variable: who_is_participant
+      is: Petitioner-Plaintiff
+  - Middile Name: participant.name.middle
+    show if:
+      variable: who_is_participant
+      is: Petitioner-Plaintiff
+  - Last Name: participant.name.last
+    show if:
+      variable: who_is_participant
+      is: Petitioner-Plaintiff
+  - note: |
+      What's the alternate payee name?    
+    show if: 
+      variable: who_is_participant
+      is: Defendant-Respondent
+  - First Name: alternate_payee.name.first
+    show if:
+      variable: who_is_participant
+      is: Defendant-Respondent
+  - Middile Name: alternate_payee.name.middle
+    show if:
+      variable: who_is_participant
+      is: Defendant-Respondent
+  - Last Name: alternate_payee.name.last
+    show if:
+      variable: who_is_participant
+      is: Defendant-Respondent
+---
+question: |
+  Please fill participant address.
+fields:
+  - Street address: participant.address.address
+  - Unit: participant.address.unit
+    required: False
+  - City: participant.address.city
+  - state: participant.address.state
+  - Zip: participant.address.zip
+---
+question: |
+  Please fill alternate payee address.
+fields:
+  - Street address: alternate_payee.address.address
+  - Unit: alternate_payee.address.unit
+    required: False
+  - City: alternate_payee.address.city
+  - state: alternate_payee.address.state
+  - Zip: alternate_payee.address.zip
+---
+question: |
+  What is the assignment date? Please note: this date is very important and is set by law in your state, unless you agreed otherwise in your divorce agreement. [(Read more here)](${ url_of('dispatch') }){:target="_blank"}.
+fields:
+  - Assignment Date: assignment_date
+    datatype: date
+---
+question: |
+  How the plan should be divided?
+fields:
+  - Please select how the plan should be divided [(Read More)](${ url_of('dispatch') }){:target="_blank"}: awarding
+    datatype: radio
+    choices:
+      - Percentage To The Alternate Payee 
+      - Fixed Dollar Amount With Gains Or Losses
+      - Fixed Dollar Amount With No Gains Or Losses
+      - Percentage, But Excluding Pre-Marital Balance
+      - Percentage, But Excluding Pre-Marital Balance With Passive Growth
+      - Percentage Of An Employee Stock Ownership Plan (ESOP)
+---
+question: |
+  Date of Marriage
+fields:
+  - Date of Marriage: date_of_marriage
+    datatype: date
+---
+question: |
+  What is the dollar amount that the non-employee spouse will receive?
+fields:
+  - Dollar: dollar
+    datatype: currency 
+---
+question: |
+  What is the percentage that the non-employee spouse will receive? (If your divorce did not specify a percentage, most courts operate off of a presumption of 50% of the funds that went into the account during the marriage.)
+fields:
+  - Percentage: percentage
+    datatype: integer
+---
+question: |
+  State
+fields:
+  - State: state
+---
+code: |
+  if who_is_participant == "Petitioner-Plaintiff":
+    participant.name.first = filing_party.name.first
+---
+mandatory: True
+question: Your document
+attachment code: the_document
+---
+attachment:
+  variable name: the_document
+  docx template file: For_testing_deferred_compensation.docx
+---
+if: document == "California"
+attachment:
+  variable name: the_document
+  docx template file: california_template.docx
+---
+if: document == "North Dakota"
+attachment:
+  variable name: the_document
+  docx template file: North_Dakota_template.docx
+

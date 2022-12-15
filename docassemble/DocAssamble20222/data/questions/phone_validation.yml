@@ -35,7 +35,7 @@ subquestion: |
   Enter your phone number as you
   would dial it in
   ${ country_name(user.phone_country) }.
-  % endif
+  % endif 
 fields:
   - Phone number: user.phone_number
     validate: |

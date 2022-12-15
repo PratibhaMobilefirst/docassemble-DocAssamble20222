@@ -1,0 +1,73 @@
+metadata:
+  title: Address autocomplete
+  example start: 2
+  example end: 2
+  documentation: "https://docassemble.org/docs/objects.html#address autocomplete"
+  footer: |
+    Icon made by [Freepik](http://www.flaticon.com/authors/freepik)
+---
+objects:
+  - defendant: Individual
+---
+
+question: |
+  What is the address of the adverse
+  party?
+fields:
+  - Address: defendant.address.address
+    address autocomplete: True
+  - City: defendant.address.city
+  - State: defendant.address.state
+    code: |
+      states_list()
+  - Zip: defendant.address.zip
+    required: False
+  - County: defendant.address.county
+  - Are you Fine?: fine
+    datatype: yesno
+    
+---
+
+question: |
+  hello, How are you?
+fields:
+  no label: fill_answer
+  
+---
+sets: defendant.address.county
+code: |
+  defendant.address.geolocate()
+---
+question: |
+  Please upload a file .
+fields:
+  - Picture: user_picture
+    datatype: file
+---
+mandatory: True
+decoration: chart-bar
+question: |
+  The adverse party's zip code
+  [FILE star.jpg, 100%]
+  is ${ defendant.address.zip }
+  ${ user_picture.show(width='50px') }.
+  
+   > We are making more money
+  :far-fa-money-bill-alt: than
+  we did in the second quarter.
+
+  So you can sleep well tonight! :bed:
+
+attachment:
+  name: Your QR code
+  filename: your_code
+  valid formats:
+      - docx
+      - pdf
+  content: |
+    Use the QR reader on your smartphone to take a picture of this:
+    
+    [QR https://news.google.com]
+
+    
+ 

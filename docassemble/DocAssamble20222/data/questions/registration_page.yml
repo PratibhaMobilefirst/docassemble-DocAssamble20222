@@ -17,7 +17,7 @@ question: |
 subquestion: | 
   Already Registered? [sign in](https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/signIn_signUp.yml)
   > Required fields are marked as <span class = "astric">*</span>
-  <a href="https://www.google.com" data-title="Hyperlink">hover on me</a>
+  <a href="https://www.google.com" data-title="Hyperlink">testing Hover</a>
 css: |
   <style>
     .astric {
@@ -82,6 +82,8 @@ fields:
     datatype: date 
 
 ---
+
+
 mandatory: True
 field: registration_confirm
 question: |
@@ -120,10 +122,10 @@ fields:
     datatype: date
     disable others:
       - member_name
-back button: True
+back button: registration_main
 continue button label: Confirm
 back button label: |
-  Back to edit
+  Edit Registration
 ---
 field: password_section
 question: | 
