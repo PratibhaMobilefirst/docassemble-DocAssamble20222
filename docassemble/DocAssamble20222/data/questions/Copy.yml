@@ -1,4 +1,3 @@
----
 modules:
   - docassemble.base.util
 ---
@@ -9,21 +8,9 @@ objects:
   - alternate_payee: Individual
   - filing_party: Individual
 ---
-id: interview order
 mandatory: True
-code: |
-  document
-  role
-  if document == 'California' or document == 'Kansas':
-    filing_party_name_info
-  if document == 'California' or document == 'Kansas':
-    filing_party_address_info
-  petitioner_field
-  respondent_field
-  
----
 question: |
-  In which state was the divorce?
+  Where do you live?
 fields: 
   - Please select your state: document
     datatype: radio
@@ -36,11 +23,12 @@ fields:
       - New Jersey
       - New York 
 ---
+mandatory: True
 question: |
-  What is the filing party's role in the case?
+  What is the filing party's role in the case? 
 subquestion: |
-  For example, are you the attorney for the plaintiff? Or a limited scope attorney for the respondent?
-fields:
+  For example, are you the attorney for the plaintiff? Or a limited scope attorney for the respondent? 
+fields: 
   - Role in the case: role
     datatype: radio
     choices:
@@ -56,58 +44,13 @@ fields:
     show if: 
       variable: role
       is: Attorney
-  - Fill your role here: other
-    show if :
-      variable: role
-      is: Other
+  - no label: role
+    show if:
+      code: |
+      role == 'Other'
 ---
-field: petitioner_field
-question: |
-  What is the Petitioner/Plaintiff's Name?
-fields:
-  - First Name: petitioner.name.first
-    default: |
-      ${ petitioner_info }
-  - Middle Name: petitioner.name.middle
-    default: |
-      ${ petitioner_info }
-    required: False
-  - Last Name: petitioner.name.last
-    default: |
-      ${ petitioner_info }
----
-field: respondent_field
-question: |
-  What is the Respondent/Defendant's name?
-fields:
-  - First Name: respondent.name.first
-    default: |
-      ${ respondent_info }
-  - Middle Name: respondent.name.middle
-    default: |
-      ${ respondent_info }
-    required: False
-  - Last Name: respondent.name.last
-    default: |
-      ${ respondent_info }
-
----
-code: |
-  petitioner_info = petitioner.name
-  if role == 'Petitioner/Plaintiff' and (document == 'California' or document == 'Kansas'):
-    petitioner.name = filing_party.name
-  else: 
-    petitioner_info = petitioner.name
----
-code: |
-  respondent_info = respondent.name
-  if role == 'Respondent/Defendant' and (document == 'California' or document == 'Kansas'):
-    respondent.name = filing_party.name
-  else: 
-    respondent_info = respondent.name
-    
----
-field: filing_party_name_info
+variable:
+  role
 question: |
   Who will be filing this with the court?
 fields:
@@ -123,12 +66,12 @@ fields:
         role == 'Petitioner/Plaintiff' or role == 'Respondent/Defendant'
     datatype: number
   - Phone: filing_party.phone
+
 ---
 code: |
   if role == "Petitioner/Plaintiff" and "Respondent/Defendant":
     role_of_filer = "In Pro Per"
 ---
-field: filing_party_address_info
 question: |
   Filing Party Address
 fields:
@@ -136,8 +79,24 @@ fields:
   - Unit: filing_party.address.unit
     required: False
   - City: filing_party.address.city
-  - State: filing_party.address.state
+  - state: filing_party.address.state
   - Zip: filing_party.address.zip
+---
+question: |
+  What is the Petitioner/Plaintiff's Name?
+fields:
+  - First Name: petitioner.name.first
+  - Middle Name: petitioner.name.middle
+    required: False
+  - Last Name: petitioner.name.last
+---
+question: |
+  What is the Respondent/Defendant's name?
+fields:
+  - First Name: respondent.name.first
+  - Middle Name: respondent.name.middle
+    required: False
+  - Last Name: respondent.name.last
 ---
 question: |
   In what county was your divorce? 
@@ -177,7 +136,7 @@ fields:
 question: |
   Please select the employee (participant) spouse for this retirement plan.            "Petitioner-Plaintiff" or "Defendant-Respondent"
 fields:
-  - Who is participant: who_is_participant
+  - Who is psrticipant: who_is_participant
     datatype: radio
     choices:
       - Petitioner-Plaintiff
@@ -201,7 +160,7 @@ fields:
       variable: who_is_participant
       is: Petitioner-Plaintiff
   - note: |
-      What's the participant name?   
+      What's the alternate payee name?    
     show if: 
       variable: who_is_participant
       is: Defendant-Respondent
@@ -226,7 +185,7 @@ fields:
   - Unit: participant.address.unit
     required: False
   - City: participant.address.city
-  - State: participant.address.state
+  - state: participant.address.state
   - Zip: participant.address.zip
 ---
 question: |
@@ -236,7 +195,7 @@ fields:
   - Unit: alternate_payee.address.unit
     required: False
   - City: alternate_payee.address.city
-  - State: alternate_payee.address.state
+  - state: alternate_payee.address.state
   - Zip: alternate_payee.address.zip
 ---
 question: |
@@ -279,7 +238,11 @@ subquestion: |
 fields:
   - Percentage: percentage
     datatype: integer
-
+---
+question: |
+  State
+fields:
+  - State: state
 ---
 code: |
   if who_is_participant == "Petitioner-Plaintiff":
@@ -289,7 +252,7 @@ mandatory: True
 question: Your document
 field: target_url
 buttons:
-  - Restart: "https://gen.lexyalgo.com/interview?i=docassemble.playground4DocAssamble20222:data/questions/deferred_interview_new.yml"
+  - Restart: "https://gen.lexyalgo.com"
 attachment code: the_document
 ---
 attachment:

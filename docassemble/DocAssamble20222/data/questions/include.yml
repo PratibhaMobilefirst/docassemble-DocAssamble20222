@@ -1,0 +1,75 @@
+objects:
+  - user: Individual 
+  - another_user: Individual
+---
+mandatory: True
+question: |
+  Role
+fields:
+  - Role: var_name
+    datatype: radio
+    choices:
+      - A
+      - B
+      - C
+  - Role: var_name
+    datatype: radio
+    choices:
+      - D
+      - E
+      - Others
+    show if:
+      variable: var_name
+      is: C
+  - Others: other
+    show if:
+      variable: var_name
+      is: Others
+---
+mandatory: True
+question: |
+ Fill these fields
+fields:
+  - Name: user.name.first
+    default: |
+      ${ store }
+  - Email: email
+    default: email@gmail.com
+    datatype: email
+  - case Number: case_number
+    default: 7766
+    hide if:
+      code: |
+        var_name == 'A' or var_name == 'B'
+---
+---
+mandatory: True
+question: |
+ Fill these fields
+fields:
+  - Name: another_user.name.first
+    default: |
+      ${ store }
+  - Email: email
+    default: useremail@gmail.com
+    datatype: email
+  - case Number: case_number
+    default: 6777
+    hide if:
+      code: |
+        var_name == 'A' or var_name == 'B'
+---
+
+mandatory: True
+code: |
+  store = user.name
+  if var_name == 'A' or var_name == 'B':
+    user.name = var_name
+  if var_name == 'Others':
+    user.name = other
+  else:
+    user.name = var_name
+---
+mandatory: True
+question: |
+  Your name is ${ user }
