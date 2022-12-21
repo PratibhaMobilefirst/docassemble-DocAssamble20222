@@ -2,7 +2,7 @@
 modules:
   - docassemble.base.util
 ---
-objects:
+objects: 
   - petitioner: Individual
   - respondent: Individual
   - participant: Individual
@@ -25,13 +25,15 @@ code: |
   if document == 'California':
     court
   case_number
+  if document == 'California' or document == 'North Dakota' or document == 'New Jersey':
+    plan_name
   if document == 'North Dakota':
     judicial_district
   if document == 'Missouri':
     division_number
   petitioner_field
   respondent_field
-  plan_name
+  
 ---
 
 question: |
@@ -264,17 +266,6 @@ fields:
     default: |
       ${ participant_adddess }
 ---
-question: |
-  Please fill participant information.
-fields:
-  - Date of birth: participant.dob
-  - Social Security Number: participant.ssn
-  - Phone: participant.phone
-    default: |
-      ${ participant_phone }
-  - E-Mail: participant.email
- 
----
 mandatory: True
 question: |
   Please fill alternate payee address.
@@ -295,14 +286,7 @@ fields:
   - Zip: alternate_payee.address.zip
     default: |
       ${ alternate_payee_address }
----
-question: |
-  Please fill alternate payee information.
-fields:
-  - Date of birth: alternate_payee.dob
-  - Social Security Number: alternate_payee.ssn
-  - Phone: alternate_payee.phone
-  - E-Mail: alternate_payee.email
+
 ---
 initial: True
 code: |
@@ -319,17 +303,10 @@ code: |
     alternate_payee.address = filing_party.address
   else: 
     alternate_payee_address = ''
-
----
-initial: True
-code: |
-  if (role == 'Petitioner/Plaintiff' and who_is_participant == 'Petitioner-Plaintiff') or (role == 'Respondent/Defendant' and who_is_participant == 'Respondent-Defendant'):
-    participant_phone = filing_party.phone
-  else: 
-    participant_phone = ''
+ 
 ---
 question: |
-  What is the assignment date?
+  What is the assignment date? 
 subquestion: |
   Please note: this date is very important and is set by law in your state, unless you agreed otherwise in your divorce agreement. [(Read more here)](${ url_of('dispatch') }){:target="_blank"}.
 fields:
@@ -379,27 +356,23 @@ attachment code: |
   [the_document, addendum]
 ---
 attachment:
-  name: Addendum file attached here
+  variable name: the_document
+  docx template file: DC.docx
+---
+attachment:
+  name: The first document
   docx template file: ADDENDUM_TEMPLATE_v2.docx
   description: |
     Addendum doc file
   variable name: addendum
 ---
-attachment:
-  name: Document for ${ document }
-  variable name: the_document
-  docx template file: DEFERRED_COMPENSATION.docx
-
----
 if: document == "California"
 attachment:
-  name: Document for ${ document }
   variable name: the_document
-  docx template file: california_template.docx
+  docx template file: CA.docx
 ---
 if: document == "North Dakota"
 attachment:
-  name: Document for ${ document }
   variable name: the_document
-  docx template file: North_Dakota_FORMATTING_TEMPLATE.docx
+  docx template file: ND.docx
 

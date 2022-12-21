@@ -2,7 +2,7 @@
 modules:
   - docassemble.base.util
 ---
-objects: 
+objects:
   - petitioner: Individual
   - respondent: Individual
   - participant: Individual
@@ -13,15 +13,27 @@ id: interview order
 mandatory: True
 code: |
   document
-  role
+  if document == 'California' or document == 'Kansas':
+    role
+  else:
+    role = ''
   if document == 'California' or document == 'Kansas':
     filing_party_name_info
   if document == 'California' or document == 'Kansas':
     filing_party_address_info
+  county
+  if document == 'California':
+    court
+  case_number
+  if document == 'North Dakota':
+    judicial_district
+  if document == 'Missouri':
+    division_number
   petitioner_field
   respondent_field
-  
+  plan_name
 ---
+
 question: |
   In which state was the divorce?
 fields: 
@@ -97,15 +109,15 @@ code: |
   if role == 'Petitioner/Plaintiff' and (document == 'California' or document == 'Kansas'):
     petitioner.name = filing_party.name
   else: 
-    petitioner_info = petitioner.name
+    petitioner_info = ''
 ---
 code: |
   respondent_info = respondent.name
   if role == 'Respondent/Defendant' and (document == 'California' or document == 'Kansas'):
     respondent.name = filing_party.name
   else: 
-    respondent_info = respondent.name
-    
+    respondent_info = ''
+ 
 ---
 field: filing_party_name_info
 question: |
@@ -121,7 +133,6 @@ fields:
     hide if:
       code: |
         role == 'Petitioner/Plaintiff' or role == 'Respondent/Defendant'
-    datatype: number
   - Phone: filing_party.phone
 ---
 code: |
@@ -174,29 +185,36 @@ subquestion: |
 fields:
   - Plan Name: plan_name
 ---
+mandatory: True
 question: |
-  Please select the employee (participant) spouse for this retirement plan.            "Petitioner-Plaintiff" or "Defendant-Respondent"
+  Please select the employee (participant) spouse for this retirement plan.
 fields:
   - Who is participant: who_is_participant
     datatype: radio
     choices:
       - Petitioner-Plaintiff
-      - Defendant-Respondent
+      - Respondent-Defendant
   - note: |
       What's the participant name?
     show if: 
       variable: who_is_participant
       is: Petitioner-Plaintiff
   - First Name: participant.name.first
+    default: |
+      ${ petitioner.name.first }
     show if:
       variable: who_is_participant
       is: Petitioner-Plaintiff
   - Middle Name: participant.name.middle
+    default: |
+      ${ petitioner.name.middle }
     required: False
     show if:
       variable: who_is_participant
       is: Petitioner-Plaintiff
   - Last Name: participant.name.last
+    default: |
+      ${ petitioner.name.last }
     show if:
       variable: who_is_participant
       is: Petitioner-Plaintiff
@@ -205,39 +223,85 @@ fields:
     show if: 
       variable: who_is_participant
       is: Defendant-Respondent
-  - First Name: alternate_payee.name.first
+  - First Name: participant.name.first
+    default: |
+      ${ respondent.name.first }
     show if:
       variable: who_is_participant
-      is: Defendant-Respondent
-  - Middle Name: alternate_payee.name.middle
+      is: Respondent-Defendant
+  - Middle Name: participant.name.middle
+    default: |
+      ${ respondent.name.middle }
     required: False
     show if:
       variable: who_is_participant
-      is: Defendant-Respondent
-  - Last Name: alternate_payee.name.last
+      is: Respondent-Defendant
+  - Last Name: participant.name.last
+    default: |
+      ${ respondent.name.last }
     show if:
       variable: who_is_participant
-      is: Defendant-Respondent
+      is: Respondent-Defendant
 ---
+mandatory: True
 question: |
   Please fill participant address.
 fields:
   - Street address: participant.address.address
+    default: |
+      ${ participant_adddess }
   - Unit: participant.address.unit
+    default: |
+      ${ participant_adddess }
     required: False
   - City: participant.address.city
+    default: |
+      ${ participant_adddess }
   - State: participant.address.state
+    default: |
+      ${ participant_adddess }
   - Zip: participant.address.zip
+    default: |
+      ${ participant_adddess }
 ---
+mandatory: True
 question: |
   Please fill alternate payee address.
 fields:
   - Street address: alternate_payee.address.address
+    default: |
+      ${ alternate_payee_address }
   - Unit: alternate_payee.address.unit
+    default: |
+      ${ alternate_payee_address }
     required: False
   - City: alternate_payee.address.city
+    default: |
+      ${ alternate_payee_address }
   - State: alternate_payee.address.state
+    default: |
+      ${ alternate_payee_address }
   - Zip: alternate_payee.address.zip
+    default: |
+      ${ alternate_payee_address }
+
+---
+initial: True
+code: |
+  participant_adddess = participant.address
+  if (role == 'Petitioner/Plaintiff' and who_is_participant == 'Petitioner-Plaintiff') or (role == 'Respondent/Defendant' and who_is_participant == 'Respondent-Defendant'):
+    participant.address = filing_party.address
+  else: 
+    participant_adddess = ''
+---
+initial: True
+code: |
+  alternate_payee_address = alternate_payee.address
+  if (role == 'Petitioner/Plaintiff' and who_is_participant == 'Respondent-Defendant') or (role == 'Respondent/Defendant' and who_is_participant == 'Petitioner-Plaintiff'):
+    alternate_payee.address = filing_party.address
+  else: 
+    alternate_payee_address = ''
+ 
 ---
 question: |
   What is the assignment date? 
@@ -281,33 +345,28 @@ fields:
     datatype: integer
 
 ---
-code: |
-  if who_is_participant == "Petitioner-Plaintiff":
-    participant.name.first = filing_party.name.first
----
 mandatory: True
 question: Your document
 field: target_url
 buttons:
   - Restart: "https://gen.lexyalgo.com/interview?i=docassemble.playground4DocAssamble20222:data/questions/deferred_interview_new.yml"
-attachment code: the_document
+attachment code:  the_document
 ---
 attachment:
+  name: Document for ${ document }
   variable name: the_document
-  docx template file: For_testing_deferred_compensation.docx
+  docx template file: DEFERRED_COMPENSATION.docx
+
 ---
 if: document == "California"
 attachment:
+  name: Document for ${ document }
   variable name: the_document
   docx template file: california_template.docx
 ---
 if: document == "North Dakota"
 attachment:
+  name: Document for ${ document }
   variable name: the_document
-  docx template file: North_Dakota_template.docx
----
-mandatory: True
-code: |
-  command('restart', url=target_url)
-
+  docx template file: NorthDakota21.docx
 

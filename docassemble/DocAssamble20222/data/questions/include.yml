@@ -1,75 +1,133 @@
 objects:
-  - user: Individual 
-  - another_user: Individual
+  - filing: Individual 
+  - participant: Individual
+  - alternate: Individual
 ---
-mandatory: True
-question: |
-  Role
-fields:
-  - Role: var_name
-    datatype: radio
-    choices:
-      - A
-      - B
-      - C
-  - Role: var_name
-    datatype: radio
-    choices:
-      - D
-      - E
-      - Others
-    show if:
-      variable: var_name
-      is: C
-  - Others: other
-    show if:
-      variable: var_name
-      is: Others
----
-mandatory: True
-question: |
- Fill these fields
-fields:
-  - Name: user.name.first
-    default: |
-      ${ store }
-  - Email: email
-    default: email@gmail.com
-    datatype: email
-  - case Number: case_number
-    default: 7766
-    hide if:
-      code: |
-        var_name == 'A' or var_name == 'B'
----
----
-mandatory: True
-question: |
- Fill these fields
-fields:
-  - Name: another_user.name.first
-    default: |
-      ${ store }
-  - Email: email
-    default: useremail@gmail.com
-    datatype: email
-  - case Number: case_number
-    default: 6777
-    hide if:
-      code: |
-        var_name == 'A' or var_name == 'B'
----
-
-mandatory: True
 code: |
-  store = user.name
-  if var_name == 'A' or var_name == 'B':
-    user.name = var_name
-  if var_name == 'Others':
-    user.name = other
+  role
+  filing.address
+  who
+  participant.address
+  alternate.address
+---
+question: |
+  filing party
+fields:
+  - Role: role
+    datatype: radio
+    choices:
+      - Plaintiff 
+      - Respondent
+---
+question: |
+  Who will be filing this with the court?
+fields:
+  - First Name: filing.name.first
+  - Middle Name: filing.name.middle
+    required: False
+  - Last Name: filing.name.last 
+  - Email: filing.email
+    datatype: email
+  - Bar Number: bar_number
+    hide if:
+      code: |
+        role == 'Petitioner/Plaintiff' or role == 'Respondent/Defendant'
+  - Phone: filing.phone
+---
+question: |
+  Filing party address
+fields:
+  - Street address: filing.address.address
+  - Unit: filing.address.unit
+    required: False
+  - City: filing.address.city
+  - State: filing.address.state
+  - Zip: filing.address.zip
+---
+question: |
+  Choose participant
+fields:
+  - Role: who
+    datatype: radio
+    choices:
+      - plaintiff
+      - respondent
+---
+question: |
+  Participant address
+fields:
+  - Street address: participant.address.address
+    default: |
+      ${ participant_add }
+  - Unit: participant.address.unit
+    default: |
+      ${ participant_add }
+    required: False
+  - City: participant.address.city
+    default: |
+      ${ participant_add }
+  - State: participant.address.state
+    default: |
+      ${ participant_add }
+  - Zip: participant.address.zip
+    default: |
+      ${ participant_add }
+---
+question: |
+  Alternate Payee address
+fields:
+  - Street address: alternate.address.address
+    default: |
+      ${ alternate_add }
+  - Unit: alternate.address.unit
+    default: |
+      ${ alternate_add }
+    required: False
+  - City: alternate.address.city
+    default: |
+      ${ alternate_add }
+  - State: alternate.address.state
+    default: |
+      ${ alternate_add }
+  - Zip: alternate.address.zip
+    default: |
+      ${ alternate_add }
+---
+initial: True
+code: |
+  participant_add = participant.address
+  if (role == 'Plaintiff' and who == 'plaintiff') or (role == 'Respondent' and who == 'respondent'):
+    participant.address = filing.address
+  else: 
+    participant_add = ''
+---
+initial: True 
+code: |
+  alternate_add = alternate.address
+  if (role == 'Plaintiff' and who == 'plaintiff') or (role == 'Respondent' and who == 'respondent'):
+    alternate.address = filing.address
+  else: 
+    alternate_add = ''
+---
+question: |
+  Participant Phone Number
+fields:
+  - phone: participant_phone
+    default: |
+      ${ phn_num }
+---
+initial: True
+code: |
+  if (role == 'Plaintiff' and who == 'plaintiff'):
+    phn_num = filing.phone
   else:
-    user.name = var_name
+    phn_num = ''  
 ---
 mandatory: True
 question: |
-  Your name is ${ user }
+  > Participant phone number is ${ participant_phone }
+  > Filing party address is ${ filing.address }
+  
+  > Participant address is ${ participant.address }
+  
+  > Alternate Payee address is ${ alternate.address }
