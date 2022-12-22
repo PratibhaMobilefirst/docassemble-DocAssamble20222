@@ -32,6 +32,8 @@ code: |
   petitioner_field
   respondent_field
   plan_name
+  who_is_participant
+
 ---
 
 question: |
@@ -245,6 +247,21 @@ fields:
 ---
 mandatory: True
 question: |
+  Please fill participant information.
+fields:
+  - Date Of Birth: participant.dob
+    datatype: date
+  - Social Security Number: participant.ssn
+  - Phone: participant.phone
+    default: |
+      ${ participant_phone }
+  - E-Mail: participant.email
+    datatype: email
+    default: |
+      ${ participant_email }
+---
+mandatory: True
+question: |
   Please fill participant address.
 fields:
   - Street address: participant.address.address
@@ -263,17 +280,22 @@ fields:
   - Zip: participant.address.zip
     default: |
       ${ participant_adddess }
+
 ---
+mandatory: True
 question: |
-  Please fill participant information.
+  Please fill alternate payee information.
 fields:
-  - Date of birth: participant.dob
-  - Social Security Number: participant.ssn
-  - Phone: participant.phone
+  - Date Of Birth: alternate_payee.dob
+    datatype: date
+  - Social Security Number: alternate_payee.ssn
+  - Phone: alternate_payee.phone
     default: |
-      ${ participant_phone }
-  - E-Mail: participant.email
- 
+      ${ alternate_payee_phone }
+  - E-Mail: alternate_payee.email
+    datatype: email
+    default: |
+      ${ alternate_payee_email }
 ---
 mandatory: True
 question: |
@@ -295,14 +317,7 @@ fields:
   - Zip: alternate_payee.address.zip
     default: |
       ${ alternate_payee_address }
----
-question: |
-  Please fill alternate payee information.
-fields:
-  - Date of birth: alternate_payee.dob
-  - Social Security Number: alternate_payee.ssn
-  - Phone: alternate_payee.phone
-  - E-Mail: alternate_payee.email
+
 ---
 initial: True
 code: |
@@ -327,6 +342,27 @@ code: |
     participant_phone = filing_party.phone
   else: 
     participant_phone = ''
+---
+initial: True
+code: |
+  if (role == 'Petitioner/Plaintiff' and who_is_participant == 'Respondent-Defendant') or (role == 'Respondent/Defendant' and who_is_participant == 'Petitioner-Plaintiff'):
+    alternate_payee_phone = filing_party.phone
+  else: 
+    alternate_payee_phone = ''
+---
+initial: True
+code: |
+  if (role == 'Petitioner/Plaintiff' and who_is_participant == 'Petitioner-Plaintiff') or (role == 'Respondent/Defendant' and who_is_participant == 'Respondent-Defendant'):
+    participant_email = filing_party.email
+  else: 
+    participant_email = ''
+---
+initial: True
+code: |
+  if (role == 'Petitioner/Plaintiff' and who_is_participant == 'Respondent-Defendant') or (role == 'Respondent/Defendant' and who_is_participant == 'Petitioner-Plaintiff'):
+    alternate_payee_email = filing_party.email
+  else: 
+    alternate_payee_email = ''
 ---
 question: |
   What is the assignment date?
@@ -371,12 +407,19 @@ fields:
 
 ---
 mandatory: True
-question: Your document
+question: |
+  Your document 
+attachment code: |
+  [the_document, addendum]
+subquestion: |
+  You want to restart the interview again, Click on Restart button.
 field: target_url
 buttons:
   - Restart: "https://gen.lexyalgo.com/interview?i=docassemble.playground4DocAssamble20222:data/questions/deferred_interview_new.yml"
-attachment code: |
-  [the_document, addendum]
+---
+code: |
+  if target_url:
+    message("The interview is over.", "Better luck next time!")
 ---
 attachment:
   name: Addendum file attached here
@@ -395,7 +438,7 @@ if: document == "California"
 attachment:
   name: Document for ${ document }
   variable name: the_document
-  docx template file: california_template.docx
+  docx template file: california_template_1.docx
 ---
 if: document == "North Dakota"
 attachment:
