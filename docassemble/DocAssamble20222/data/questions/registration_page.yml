@@ -6,6 +6,9 @@ metadata:
     Thanks
   show login: False
   allow registration: True
+  exit link: leave
+  exit label: |
+    Exit interview
 ---
 objects:
   - user: Individual

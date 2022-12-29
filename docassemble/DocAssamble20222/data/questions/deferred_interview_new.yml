@@ -136,6 +136,9 @@ fields:
       code: |
         role == 'Petitioner/Plaintiff' or role == 'Respondent/Defendant'
   - Phone: filing_party.phone
+validation code: |
+  if not phone_number_is_valid(phone_number_formatted(filing_party.phone)):
+    validation_error('Phone number is not valid')
 ---
 code: |
   if role == "Petitioner/Plaintiff" and "Respondent/Defendant":
@@ -250,15 +253,22 @@ question: |
   Please fill participant information.
 fields:
   - Date Of Birth: participant.dob
+    hint: MM/DD/YYYY
     datatype: date
   - Social Security Number: participant.ssn
+    datatype: ssn
+    hint: XXX-XX-XXXX
   - Phone: participant.phone
+    hint: (XXX)-XXX-XXXX
     default: |
       ${ participant_phone }
   - E-Mail: participant.email
     datatype: email
     default: |
       ${ participant_email }
+validation code: |
+  if not phone_number_is_valid(phone_number_formatted(participant.phone)):
+    validation_error('Phone number is not valid')
 ---
 mandatory: True
 question: |
@@ -288,14 +298,21 @@ question: |
 fields:
   - Date Of Birth: alternate_payee.dob
     datatype: date
+    hint: MM/DD/YYYY
   - Social Security Number: alternate_payee.ssn
+    datatype: ssn
+    hint: XXX-XX-XXXX
   - Phone: alternate_payee.phone
+    hint: (XXX)-XXX-XXXX
     default: |
       ${ alternate_payee_phone }
   - E-Mail: alternate_payee.email
     datatype: email
     default: |
       ${ alternate_payee_email }
+validation code: |
+  if not phone_number_is_valid(phone_number_formatted(alternate_payee.phone)):
+    validation_error('Phone number is not valid')
 ---
 mandatory: True
 question: |
@@ -408,18 +425,13 @@ fields:
 ---
 mandatory: True
 question: |
-  Your document 
+  Download document for **${ document }** and **Addendum** attached below.
+subquestion: |
+  Click on 'Restart' button to start interview again.
+    > ${ action_button_html(url_of('restart'), label="Restart", color="warning", size="md") }
 attachment code: |
   [the_document, addendum]
-subquestion: |
-  You want to restart the interview again, Click on Restart button.
-field: target_url
-buttons:
-  - Restart: "https://gen.lexyalgo.com/interview?i=docassemble.playground4DocAssamble20222:data/questions/deferred_interview_new.yml"
----
-code: |
-  if target_url:
-    message("The interview is over.", "Better luck next time!")
+
 ---
 attachment:
   name: Addendum file attached here
@@ -427,22 +439,24 @@ attachment:
   description: |
     Addendum doc file
   variable name: addendum
+always include editable files: True
 ---
 attachment:
   name: Document for ${ document }
   variable name: the_document
-  docx template file: DEFERRED_COMPENSATION.docx
-
+  docx template file: DEFERRED_COMPENSATION_NEW.docx
+always include editable files: True
 ---
 if: document == "California"
 attachment:
   name: Document for ${ document }
   variable name: the_document
   docx template file: california_template_1.docx
+always include editable files: True
 ---
 if: document == "North Dakota"
 attachment:
   name: Document for ${ document }
   variable name: the_document
-  docx template file: North_Dakota_FORMATTING_TEMPLATE.docx
-
+  docx template file: North_Dakota_template.docx
+always include editable files: True

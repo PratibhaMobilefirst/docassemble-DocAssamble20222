@@ -123,11 +123,10 @@ code: |
   else:
     phn_num = ''  
 ---
+
 mandatory: True
 question: |
-  > Participant phone number is ${ participant_phone }
-  > Filing party address is ${ filing.address }
-  
-  > Participant address is ${ participant.address }
-  
-  > Alternate Payee address is ${ alternate.address }
+  Thank you
+subquestion: |
+  ${ action_button_html(url_of('restart'), label="Restart", color="primary", size="md") }
+---
