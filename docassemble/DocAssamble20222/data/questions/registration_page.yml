@@ -6,9 +6,10 @@ metadata:
     Thanks
   show login: False
   allow registration: True
-  exit link: leave
+  exit url: "https://gen.lexyalgo.com/interviews"
+  exit link: exit
   exit label: |
-    Exit interview
+    Resume Interviews
 ---
 objects:
   - user: Individual
@@ -163,7 +164,7 @@ code: |
 
 question: |
   Welcome **${member_name}** You have successfully registered yourself.
-  Please [sign in](https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/signIn_signUp.yml#page1).
+  Please [sign in](https://gen.lexyalgo.com/interview?i=docassemble.DocAssamble20222:data/questions/signIn_signUp.yml).
 event: welcome
 ---
 

@@ -1,12 +1,12 @@
----
 modules:
-  - docassemble.base.util
+  - .dastripe
 ---
 features:
-  progress bar: True
+  javascript: https://js.stripe.com/v3/
 ---
 
 objects:
+  - payment: DAStripe.using(payor=petitioner, currency='inr')
   - petitioner: Individual
   - respondent: Individual
   - participant: Individual
@@ -37,7 +37,12 @@ code: |
   respondent_field
   plan_name
   who_is_participant
-
+  participant_info
+  participant_address_info
+  alternate_payee_info
+  alternate_payee_address_info
+  if not payment.paid:
+    payment_screen
 ---
 
 question: |
@@ -194,7 +199,6 @@ subquestion: |
 fields:
   - Plan Name: plan_name
 ---
-mandatory: True
 question: |
   Please select the employee (participant) spouse for this retirement plan.
 fields:
@@ -252,7 +256,7 @@ fields:
       variable: who_is_participant
       is: Respondent-Defendant
 ---
-mandatory: True
+field: participant_info
 question: |
   Please fill participant information.
 fields:
@@ -274,6 +278,7 @@ validation code: |
   if not phone_number_is_valid(phone_number_formatted(participant.phone)):
     validation_error('Phone number is not valid')
 ---
+field: participant_address_info
 mandatory: True
 question: |
   Please fill participant address.
@@ -296,7 +301,7 @@ fields:
       ${ participant_adddess }
 
 ---
-mandatory: True
+field: alternate_payee_info
 question: |
   Please fill alternate payee information.
 fields:
@@ -318,7 +323,7 @@ validation code: |
   if not phone_number_is_valid(phone_number_formatted(alternate_payee.phone)):
     validation_error('Phone number is not valid')
 ---
-mandatory: True
+field: alternate_payee_address_info
 question: |
   Please fill alternate payee address.
 fields:
@@ -426,6 +431,30 @@ fields:
   - Percentage: percentage
     datatype: integer
 
+---
+event: payment_screen
+question: |
+  You need to pay first.
+---
+question: |
+  How much do you want to pay?
+fields:
+  - Amount: payment.amount
+    default: 50
+    datatype: currency
+---
+event: payment.demand
+question: |
+  Payment
+subquestion: |
+  You need to pay up.  Enter your credit card information here.
+  ${ payment.html }
+script: |
+  ${ payment.javascript }
+---
+event: payment.success
+code: |
+  payment.process()
 ---
 progress: 100
 mandatory: True

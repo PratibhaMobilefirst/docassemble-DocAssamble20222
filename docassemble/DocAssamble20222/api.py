@@ -1,6 +1,5 @@
 import requests
 
-
 def createuser():
     r = requests.get('https://randomuser.me/api/')
     if r.status_code != 200:

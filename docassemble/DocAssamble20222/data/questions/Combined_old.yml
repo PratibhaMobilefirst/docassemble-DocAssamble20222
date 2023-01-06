@@ -1,12 +1,15 @@
----
 modules:
-  - docassemble.base.util
+  - .dastripe
 ---
 features:
+  javascript: https://js.stripe.com/v3/
+  popover trigger: click
   progress bar: True
+  show progress bar percentage: True
 ---
 
 objects:
+  - payment: DAStripe.using(payor=petitioner, currency='inr')
   - petitioner: Individual
   - respondent: Individual
   - participant: Individual
@@ -16,6 +19,11 @@ objects:
 id: interview order
 mandatory: True
 code: |
+  pick_plan
+  if pick_plan == "Pension Plan":
+    Pension
+  else:
+    Pension = ''
   document
   if document == 'California' or document == 'Kansas':
     role
@@ -37,9 +45,44 @@ code: |
   respondent_field
   plan_name
   who_is_participant
-
+  participant_info
+  participant_address_info
+  alternate_payee_info
+  alternate_payee_address_info
+  if (pick_plan == "Deferred Compensation" and awarding == "Percentage To The Alternate Payee") or (pick_plan == "Deferred Compensation" and awarding == "Percentage Of An Employee Stock Ownership Plan (ESOP)"):
+    percentage
+    assignment_date
+  if pick_plan == "Deferred Compensation" and awarding == "Fixed Dollar Amount With Gains Or Losses":
+    dollar
+    assignment_date
+  if pick_plan == "Deferred Compensation" and awarding == "Fixed Dollar Amount With No Gains Or Losses":
+    dollar
+  if (pick_plan == "Deferred Compensation" and awarding == "Percentage, But Excluding Pre-Marital Balance") or (pick_plan == "Deferred Compensation" and awarding == "Percentage, But Excluding Pre-Marital Balance With Passive Growth"):
+    percentage
+    assignment_date
+    date_of_marriage
+  if pick_plan == "Pension Plan" and Payment_type == "Coverture (Time Rule)":
+    date_of_marriage
+    assignment_date
+  if pick_plan == "Pension Plan" and Payment_type == "Fixed Monthly Dollar Amount":
+    dollar
+  if pick_plan == "Pension Plan" and Payment_type == "Fixed Percentage" and Pension == "Retired":
+    percentage
+  if pick_plan == "Pension Plan" and Payment_type == "Fixed Percentage" and (Pension == "Shared" or Pension == "Separate"):
+    percentage
+    assignment_date
+  if not payment.paid:
+    payment_screen
 ---
-
+question: |
+  What the plan it is?
+fields: 
+  - Pick One: pick_plan
+    datatype: radio
+    choices:
+      - Deferred Compensation
+      - Pension Plan
+---
 question: |
   In which state was the divorce?
 fields: 
@@ -194,7 +237,6 @@ subquestion: |
 fields:
   - Plan Name: plan_name
 ---
-mandatory: True
 question: |
   Please select the employee (participant) spouse for this retirement plan.
 fields:
@@ -252,7 +294,7 @@ fields:
       variable: who_is_participant
       is: Respondent-Defendant
 ---
-mandatory: True
+field: participant_info
 question: |
   Please fill participant information.
 fields:
@@ -274,6 +316,7 @@ validation code: |
   if not phone_number_is_valid(phone_number_formatted(participant.phone)):
     validation_error('Phone number is not valid')
 ---
+field: participant_address_info
 mandatory: True
 question: |
   Please fill participant address.
@@ -296,7 +339,7 @@ fields:
       ${ participant_adddess }
 
 ---
-mandatory: True
+field: alternate_payee_info
 question: |
   Please fill alternate payee information.
 fields:
@@ -318,7 +361,7 @@ validation code: |
   if not phone_number_is_valid(phone_number_formatted(alternate_payee.phone)):
     validation_error('Phone number is not valid')
 ---
-mandatory: True
+field: alternate_payee_address_info
 question: |
   Please fill alternate payee address.
 fields:
@@ -390,7 +433,7 @@ question: |
 subquestion: |
   Please note: this date is very important and is set by law in your state, unless you agreed otherwise in your divorce agreement. [(Read more here)](${ url_of('dispatch') }){:target="_blank"}.
 fields:
-  - Assignment Date: assignment_date
+  - Date of assignment: assignment_date
     datatype: date
 ---
 question: |
@@ -405,6 +448,9 @@ fields:
       - Percentage, But Excluding Pre-Marital Balance
       - Percentage, But Excluding Pre-Marital Balance With Passive Growth
       - Percentage Of An Employee Stock Ownership Plan (ESOP)
+    hide if:
+      code: |
+        Pension == "Retired" or Pension == "Separate" or Pension == "Shared"
 ---
 question: |
   Date of Marriage
@@ -426,6 +472,70 @@ fields:
   - Percentage: percentage
     datatype: integer
 
+---
+question: |
+  Is the plan participant (employee) retired or not yet retired?
+fields:
+  - no label: Pension
+    datatype: radio
+    choices:
+      - Retired
+      - Not Retired
+  - Select one: Pension
+    datatype: radio
+    help: |
+        **Separate:** The non-employee gets their own pension.[(Read more here)](${ url_of('dispatch') }){:target="_blank"}
+        **Shared:** The non-employee gets a percent of each check.[(Read more here)](${ url_of('dispatch') }){:target="_blank"}.
+    choices:
+      - <span class="shared" title= "The non-employee gets their own pension">Shared</span>
+      - <span class="shared" title= "The non-employee gets a percent of each check">Separate</span>
+    show if: 
+      variable: Pension
+      is: Not Retired
+    
+---
+question: |
+  Select your division method.
+fields:
+  - Choose one: Payment_type
+    datatype: radio
+    choices:
+      - Coverture (Time Rule)
+      - Fixed Monthly Dollar Amount
+      - Fixed Percentage
+    show if:
+      code: |
+        Pension == "Retired" or Pension == "Separate" or Pension == "Shared"
+---
+event: payment_screen
+question: |
+  You need to pay first.
+---
+question: |
+  How much do you want to pay?
+fields:
+  - Amount: payment.amount
+    default: 50
+    datatype: currency
+---
+event: payment.demand
+question: |
+  Payment
+subquestion: |
+  In order to cover our development costs, we are initially charging $50 per QDRO. If you are unhappy with your QDRO, we have a 100% satisfaction guarantee - just reach out within three months, give us a chance to make the QDRO right, and we'll give a full refund if the QDRO can't be fixed.
+  ${ payment.html }
+
+  
+script: |
+  ${ payment.javascript }
+under: |
+  Can't afford the fee? Though we charge less than any other QDRO website out there, we've got your back. Please reach out to us via the contact form on [(Lexyalgo.com)](${ url_of('https://Lexyalgo.com/') }){:target="_blank"} and we'll provide a coupon code.
+  
+  > [Already have a coupon code?](${ url_of('https://gen.lexyalgo.com/interview?i=docassemble.playground4DocAssamble20222%3ACombined_Deferred_Pension.yml') })
+---
+field: payment.success
+code: |
+  payment.process()
 ---
 progress: 100
 mandatory: True
@@ -473,6 +583,35 @@ attachment:
   name: Document for ${ document }
   variable name: the_document
   docx template file: North_Dakota_template.docx
+  valid formats:
+    - pdf
+    - docx
+always include editable files: True
+---
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: pension_combined_5_States.docx
+  valid formats:
+    - pdf
+    - docx
+always include editable files: True
+---
+if: document == "California"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: pension_california.docx
+  valid formats:
+    - pdf
+    - docx
+always include editable files: True
+---
+if: document == "North Dakota"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: pension_North_Dakota.docx
   valid formats:
     - pdf
     - docx

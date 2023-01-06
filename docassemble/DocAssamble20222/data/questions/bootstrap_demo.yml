@@ -1,0 +1,122 @@
+mandatory: True
+question: |
+  In this example, the Bootstrap CSS file is included in the extras section of the interview, and the container, row, and col classes are used to create a two-column grid layout.
+subquestion: |
+  <div> H </div>
+fields: 
+  - no label: Pension
+    datatype: radio
+    choices:
+      - Retired
+      - Not Retired
+  - Select one<div class="sales-tab sales-click-effect"><div class="sales"><span class="phone-icon"><i class="fa-solid fa-circle-question"></i></span></div><section id="click-menu-wrapper" class="click-menu-wrapper"><section class="click-menu"><span class="sales-close-icon"><i class="fa-solid fa-circle-question"></i></span><section class="arrow-down"></section><div class="text"><h3>Some message here....</h3><span><a href="https://docassemble.org/search.html?q=div">Read more.</a></span></div></section></section></div>: Pension
+    datatype: radio
+    choices:
+      - <span class="shared" title= "The non-employee gets their own pension">Shared</span>
+      - <span class="shared" title= "The non-employee gets a percent of each check">Separate</span>
+    show if: 
+      variable: Pension
+      is: Not Retired 
+
+css: |
+  <style>
+    .text{
+    color:white;
+    display:flex;
+    align-items:center;
+    padding:0px 5px;
+    gap:0.5rem;
+    word-wrap: break-word;
+  }
+  .dafieldpart{
+  padding-left: 25px;
+  }
+  .da-form-group.darequired .da-form-label:after{
+  right: -22px;
+  }
+  a{
+    text-decoration:none;
+    color:blue;
+  }
+
+  .sales-tab {
+    position: relative;
+  }
+
+    .sales {
+    cursor: pointer;
+    background: #313131;
+    position: absolute;
+    top: -2.8em;
+    left: 8.6em;
+    justify-content: center;
+    border-radius: 50%;
+    }
+
+    .phone-icon {
+    color: #e1e1e1;
+    padding: 0px;
+    text-align:center;
+    }
+
+    .sales-text {
+    margin: 0;
+    padding: 5px 15px 5px 10px;
+    color: #e1e1e1;
+    float: right;
+    }
+
+    .click-menu-wrapper {
+    position: relative;
+    margin-top: 20px;
+    }
+
+    .click-menu {
+    border-radius: 5px;
+    opacity: 0;
+    z-index: 999;
+    cursor: default;
+    margin: 0;
+    padding: 0;
+    background: #b4b3b3;
+    width: 25em;
+    height: 3em;
+    position: absolute;
+    left: 8.2em;
+    top: -6.5em;
+ 
+    }
+
+    .sales-close-icon {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    z-index: 1000;
+    }
+
+    .arrow-down {
+    position: absolute;
+    right: 22.5rem;
+    bottom: -23%;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #b4b3b3;
+  }
+  .onclick-menu {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+    transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    }
+    
+
+  </style>
+script: |
+  <script>
+    $(".sales,.sales-close-icon").on('click',function(){
+    $(".click-menu").toggleClass('onclick-menu');
+    });
+  </script>

@@ -1,0 +1,10 @@
+---
+code: |
+  if 'cid' in url_args:
+    origin_of_interviewee = url_args['cid']
+  else:
+    origin_of_interviewee = 'unknown'
+---
+mandatory: True
+question: Your click id is ${ origin_of_interviewee }.
+---

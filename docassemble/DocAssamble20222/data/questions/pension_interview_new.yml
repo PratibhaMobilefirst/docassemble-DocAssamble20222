@@ -3,9 +3,10 @@ modules:
   - docassemble.base.util
 ---
 features:
+  popover trigger: click
   progress bar: True
+  show progress bar percentage: True
 ---
-
 objects:
   - petitioner: Individual
   - respondent: Individual
@@ -39,7 +40,6 @@ code: |
   who_is_participant
 
 ---
-
 question: |
   In which state was the divorce?
 fields: 
@@ -108,7 +108,6 @@ fields:
   - Last Name: respondent.name.last
     default: |
       ${ respondent_info }
-
 ---
 code: |
   petitioner_info = petitioner.name
@@ -385,32 +384,68 @@ code: |
   else: 
     alternate_payee_email = ''
 ---
+field: assignment_field
 question: |
   What is the assignment date?
 subquestion: |
-  Please note: this date is very important and is set by law in your state, unless you agreed otherwise in your divorce agreement. [(Read more here)](${ url_of('dispatch') }){:target="_blank"}.
+  Please note: This date is very important and is set by law in your state, unless you agreed otherwise in your divorce agreement. [(Read more here)](${ url_of('dispatch') }){:target="_blank"}.
 fields:
   - Assignment Date: assignment_date
     datatype: date
+    hide if:
+      code: |
+        Pension == "Retired" or Pension == "Separate" or Pension == "Shared"
+  - Date of marriage: fromDOM
+    datatype: date
+    show if:
+      code: |
+        Pension == "Retired" or Pension == "Separate" or Pension == "Shared"
+  - Date of assignment: toDOA
+    datatype: date
+    show if:
+      code: |
+        Pension == "Retired" or Pension == "Separate" or Pension == "Shared"
 ---
 question: |
-  How the plan should be divided?
+  Is the plan participant (employee) retired or not yet retired?
 fields:
-  - Please select how the plan should be divided [(Read More)](${ url_of('dispatch') }){:target="_blank"}: awarding
+  - no label: Pension
     datatype: radio
     choices:
-      - Percentage To The Alternate Payee 
-      - Fixed Dollar Amount With Gains Or Losses
-      - Fixed Dollar Amount With No Gains Or Losses
-      - Percentage, But Excluding Pre-Marital Balance
-      - Percentage, But Excluding Pre-Marital Balance With Passive Growth
-      - Percentage Of An Employee Stock Ownership Plan (ESOP)
+      - Retired
+      - Not Retired
+  - Select one: Pension
+    datatype: radio
+    help: |
+        **Separate:** The non-employee gets their own pension.[(Read more here)](${ url_of('dispatch') }){:target="_blank"}
+        **Shared:** The non-employee gets a percent of each check.[(Read more here)](${ url_of('dispatch') }){:target="_blank"}.
+    choices:
+      - <span class="shared" title= "The non-employee gets their own pension">Shared</span>
+      - <span class="shared" title= "The non-employee gets a percent of each check">Separate</span>
+    show if: 
+      variable: Pension
+      is: Not Retired
 ---
 question: |
   Date of Marriage
 fields:
   - Date of Marriage: date_of_marriage
     datatype: date
+    hide if:
+      code: |
+        Pension == "Retired" or Pension == "Separate" or Pension == "Shared"
+
+ 
+---
+question: |
+  Select your division method.
+fields:
+  - Choose one: Payment_type
+    datatype: radio
+    choices:
+      - Coverture (Time Rule)
+      - Fixed Monthly Dollar Amount
+      - Fixed Percentage
 ---
 question: |
   What is the dollar amount that the non-employee spouse will receive?
@@ -427,7 +462,6 @@ fields:
     datatype: integer
 
 ---
-progress: 100
 mandatory: True
 question: |
   Download document for **${ document }** and **Addendum** attached below.
@@ -452,7 +486,7 @@ always include editable files: True
 attachment:
   name: Document for ${ document }
   variable name: the_document
-  docx template file: DEFERRED_COMPENSATION_NEW.docx
+  docx template file: pension_combined_5_States.docx
   valid formats:
     - pdf
     - docx
@@ -462,7 +496,7 @@ if: document == "California"
 attachment:
   name: Document for ${ document }
   variable name: the_document
-  docx template file: california_template_1.docx
+  docx template file: pension_california.docx
   valid formats:
     - pdf
     - docx
@@ -472,7 +506,7 @@ if: document == "North Dakota"
 attachment:
   name: Document for ${ document }
   variable name: the_document
-  docx template file: North_Dakota_template.docx
+  docx template file: pension_North_Dakota.docx
   valid formats:
     - pdf
     - docx

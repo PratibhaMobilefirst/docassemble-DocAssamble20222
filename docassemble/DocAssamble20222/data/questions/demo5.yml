@@ -1,16 +1,31 @@
-metadata:
-  title: API
-  documentation: https://docassemble.org/docs/external.html#third party api
-  example start: 1
-  example end: 2
+
 ---
-modules:
-  - docassemble.demo.gettime
----
-mandatory: True
 question: |
-  The time
+  What are your favorite things to eat?
 subquestion: |
-  According to the World Clock API, the
-  current time in the Eastern time zone is
-  ${ get_time() }.
+  If you don't know what a vegetable or
+  fruit is, click the question mark icons.
+fields:
+  - Vegetable: target_variable
+    help: |
+      A plant.
+  - Fruit: other_target_variable
+    help: |
+      The pulpy, edible seed vessels
+      of certain plants.
+html: |
+    <a href ="www.google.com" >Click</a>
+css: |
+  <style>
+    body {
+      background-color:gray;
+    }
+  </style>
+
+      
+---
+question: Result of question
+subquestion: |
+  target_variable is:
+  "${ target_variable }"
+mandatory: True
