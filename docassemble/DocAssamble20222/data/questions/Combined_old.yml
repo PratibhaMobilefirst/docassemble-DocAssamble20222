@@ -6,6 +6,7 @@ features:
   popover trigger: click
   progress bar: True
   show progress bar percentage: True
+
 ---
 
 objects:
@@ -511,29 +512,24 @@ event: payment_screen
 question: |
   You need to pay first.
 ---
-question: |
-  How much do you want to pay?
-fields:
-  - Amount: payment.amount
-    default: 50
-    datatype: currency
+code: |
+  payment.amount = 50
 ---
 event: payment.demand
 question: |
   Payment
-subquestion: |
-  In order to cover our development costs, we are initially charging $50 per QDRO. If you are unhappy with your QDRO, we have a 100% satisfaction guarantee - just reach out within three months, give us a chance to make the QDRO right, and we'll give a full refund if the QDRO can't be fixed.
-  ${ payment.html }
-
-  
+under: |
+  In order to cover our development costs, we are initially charging $${payment.amount} per QDRO. If you are unhappy with your QDRO, we have a 100% satisfaction guarantee - just reach out within three months, give us a chance to make the QDRO right, and we'll give a full refund if the QDRO can't be fixed.
+  ${ payment.html }  
 script: |
   ${ payment.javascript }
-under: |
+
+post: |
   Can't afford the fee? Though we charge less than any other QDRO website out there, we've got your back. Please reach out to us via the contact form on [(Lexyalgo.com)](${ url_of('https://Lexyalgo.com/') }){:target="_blank"} and we'll provide a coupon code.
-  
-  > [Already have a coupon code?](${ url_of('https://gen.lexyalgo.com/interview?i=docassemble.playground4DocAssamble20222%3ACombined_Deferred_Pension.yml') })
+
+  <input type="submit" value = "Already have Coupon">
 ---
-field: payment.success
+event: payment.success
 code: |
   payment.process()
 ---

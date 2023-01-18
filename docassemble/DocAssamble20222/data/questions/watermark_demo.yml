@@ -1,0 +1,21 @@
+objects:
+  - watermark_image: DAStaticFile.using(filename='star.jpg')
+---
+mandatory: True
+question: |
+  Document
+attachment:
+  docx template file: test.docx
+  valid formats:
+    - pdf
+    - docx
+  metadata:
+    header-includes:
+      - \usepackage{draftwatermark}
+      - \SetWatermarkText{\includegraphics{${ watermark_image.path() }}}
+always include editable files: True
+---
+question: |
+  What is the name of the planet you wish to greet?
+fields:
+  - Planet: name

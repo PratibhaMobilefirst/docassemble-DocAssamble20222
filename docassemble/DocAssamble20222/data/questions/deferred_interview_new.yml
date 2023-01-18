@@ -5,7 +5,6 @@ modules:
 features:
   progress bar: True
 ---
-
 objects:
   - petitioner: Individual
   - respondent: Individual

@@ -1,0 +1,20 @@
+metadata:
+  title: Logo title
+  documentation: "https://docassemble.org/docs/functions.html#set_parts"
+  example start: 1
+  example end: 2
+---
+objects:
+  - company_logo: DAStaticFile.using(filename='egg_BLACK.png')
+---
+mandatory: True
+code: |
+  set_parts(title='Example Inc. QDRO', logo='<img src="' + company_logo.url_for() + '" style="height: 200px; width: 157px;">')
+---
+question: |
+  Welcome to the Example Inc. interview!
+field: intro
+---
+mandatory: True
+need: intro
+question: All done

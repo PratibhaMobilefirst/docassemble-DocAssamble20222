@@ -1,0 +1,10 @@
+mandatory: True
+code: |
+  aws = 'AWS'
+  log(aws, "info")
+  log("Lookout, user!", "danger")
+---
+mandatory: True
+decoration: coins
+question: |
+  The interview is complete.

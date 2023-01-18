@@ -3,9 +3,9 @@ import json
 from docassemble.base.util import word, get_config, action_argument, DAObject, prevent_going_back
 from docassemble.base.standardformatter import BUTTON_STYLE, BUTTON_CLASS
 
-stripe.api_key='sk_test_51KbgkpSDtFmq7yIYzw8zNwiG6Pl13RuwYyMeQ506l7Fw9Jgd2QM9qz50NzAe9s4AFXCVJm6azuPqK4Ta0RJUEgNu00v6U8xFyz'
-stripe_secret_key="sk_test_51KbgkpSDtFmq7yIYzw8zNwiG6Pl13RuwYyMeQ506l7Fw9Jgd2QM9qz50NzAe9s4AFXCVJm6azuPqK4Ta0RJUEgNu00v6U8xFyz"
-stripe_public_key="pk_test_51KbgkpSDtFmq7yIYeYobvgC9MO5P3oZmCFWp2j5JB9B4gmhn7cemNJ3wyVhxcRf8ZDg7rlDDIIevVAAt0s1xUYwB00ePKDxgQk"
+stripe.api_key='sk_test_51LovdEBOgpkiH8jqPDEvxENEsdJcFEnIQM7TsN3o3NyWIltxAar84EAik9M9l7yt3qw65D41BVTKfHILfZOV9SPa00xq553MIg'
+stripe_secret_key="sk_test_51LovdEBOgpkiH8jqPDEvxENEsdJcFEnIQM7TsN3o3NyWIltxAar84EAik9M9l7yt3qw65D41BVTKfHILfZOV9SPa00xq553MIg"
+stripe_public_key="pk_test_51LovdEBOgpkiH8jqLOQYD5FFJui6fbpmamvAds7qXfp0raEmWAzyTLhl3fCotIa8RCcfyKzYt1F9r4CCaXklQ1vP00Py8RIfAO"
 
 __all__ = ['DAStripe']
 
@@ -76,7 +76,7 @@ class DAStripe(DAObject):
       pass
     return """\
 <script>
-  var stripe = Stripe(""" + json.dumps("pk_test_51KbgkpSDtFmq7yIYeYobvgC9MO5P3oZmCFWp2j5JB9B4gmhn7cemNJ3wyVhxcRf8ZDg7rlDDIIevVAAt0s1xUYwB00ePKDxgQk") + """);
+  var stripe = Stripe(""" + json.dumps("pk_test_51LovdEBOgpkiH8jqLOQYD5FFJui6fbpmamvAds7qXfp0raEmWAzyTLhl3fCotIa8RCcfyKzYt1F9r4CCaXklQ1vP00Py8RIfAO") + """);
   var elements = stripe.elements();
   var style = {
     base: {
@@ -128,4 +128,4 @@ class DAStripe(DAObject):
   def process(self):
     self.result = action_argument('result')
     self.paid
-    prevent_going_back()
+ 

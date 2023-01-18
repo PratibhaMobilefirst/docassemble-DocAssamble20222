@@ -1,0 +1,14 @@
+---
+modules:
+  - .webhook
+---
+code: |
+  if 'cid' in url_args:
+    click_id = url_args['cid']
+  else:
+    click_id = 'unknown'
+---
+
+mandatory: True
+question: |
+  fuction calling  ${ yml_veriables(click_id) }
