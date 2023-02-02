@@ -6,7 +6,7 @@ code: |
   if 'cid' in url_args:
     click_id = url_args['cid']
   else:
-    click_id = 'unknown'
+    click_id = ''
 ---
 
 mandatory: True

@@ -1,0 +1,7 @@
+modules:
+  - .price_retrieve
+  
+---
+mandatory: True
+question: |
+  your product price is ${retrieve_product_price()}

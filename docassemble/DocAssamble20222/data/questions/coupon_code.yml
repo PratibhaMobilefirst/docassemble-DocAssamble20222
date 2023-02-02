@@ -1,0 +1,36 @@
+modules:
+  - .coupon_code
+---
+mandatory: True
+question: |
+  Enter coupon code?
+fields:
+  - couponcode: coupon_code
+---
+question: |
+  calling 
+---
+initial: True
+code: |
+  run: check_coupon(coupon_code)
+  if check_coupon(coupon_code) == True:
+    ctrue
+  else:
+    cfalse
+  log(check_coupon(coupon_code))
+---
+field: cfalse
+question: |
+  Enter coupon dddd?-- False
+fields:
+  - couponcode: coupon_code1
+---
+field: ctrue
+mandatory: True
+question: |
+  Here is your document, document.
+subquestion: |
+  In order  you will need this.
+attachments:
+    - content: |
+        Your name is dfdsf.

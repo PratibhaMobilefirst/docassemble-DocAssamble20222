@@ -1,27 +1,34 @@
 modules:
   - .dastripe
+  - .coupon_demo
+  - .webhook_new
+  - .price_retrieve
 ---
 features:
   javascript: https://js.stripe.com/v3/
   popover trigger: click
-  progress bar: True
-  show progress bar percentage: True
+  css: buttons.css
 
 ---
 
 objects:
-  - payment: DAStripe.using(payor=petitioner, currency='inr')
+  - payment: DAStripe.using(payor=petitioner, currency='usd')
   - petitioner: Individual
   - respondent: Individual
   - participant: Individual
   - alternate_payee: Individual
   - filing_party: Individual
+  - company_logo: DAStaticFile.using(filename='white_egg.png')
+---
+mandatory: True
+code: |
+  set_parts(title='QDRO', logo='<img src="' + company_logo.url_for() + '" style="height: 50px; width: 40px;">')
 ---
 id: interview order
 mandatory: True
 code: |
   pick_plan
-  if pick_plan == "Pension Plan":
+  if pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)":
     Pension
   else:
     Pension = ''
@@ -50,38 +57,51 @@ code: |
   participant_address_info
   alternate_payee_info
   alternate_payee_address_info
-  if (pick_plan == "Deferred Compensation" and awarding == "Percentage To The Alternate Payee") or (pick_plan == "Deferred Compensation" and awarding == "Percentage Of An Employee Stock Ownership Plan (ESOP)"):
+  if (pick_plan == "Deferred Compensation (Cash & Investment Account 401K)" and awarding == "Percentage To The Alternate Payee") or (pick_plan == "Deferred Compensation (Cash & Investment Account 401K)" and awarding == "Percentage Of An Employee Stock Ownership Plan (ESOP)"):
     percentage
     assignment_date
-  if pick_plan == "Deferred Compensation" and awarding == "Fixed Dollar Amount With Gains Or Losses":
+  if pick_plan == "Deferred Compensation (Cash & Investment Account 401K)" and awarding == "Fixed Dollar Amount With Gains Or Losses":
     dollar
     assignment_date
-  if pick_plan == "Deferred Compensation" and awarding == "Fixed Dollar Amount With No Gains Or Losses":
+  if pick_plan == "Deferred Compensation (Cash & Investment Account 401K)" and awarding == "Fixed Dollar Amount With No Gains Or Losses":
     dollar
-  if (pick_plan == "Deferred Compensation" and awarding == "Percentage, But Excluding Pre-Marital Balance") or (pick_plan == "Deferred Compensation" and awarding == "Percentage, But Excluding Pre-Marital Balance With Passive Growth"):
+  if (pick_plan == "Deferred Compensation (Cash & Investment Account 401K)" and awarding == "Percentage, But Excluding Pre-Marital Balance") or (pick_plan == "Deferred Compensation (Cash & Investment Account 401K)" and awarding == "Percentage, But Excluding Pre-Marital Balance With Passive Growth"):
     percentage
     assignment_date
     date_of_marriage
-  if pick_plan == "Pension Plan" and Payment_type == "Coverture (Time Rule)":
+  if pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)" and Payment_type == "Coverture (Time Rule)":
     date_of_marriage
     assignment_date
-  if pick_plan == "Pension Plan" and Payment_type == "Fixed Monthly Dollar Amount":
+  if pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)" and Payment_type == "Fixed Monthly Dollar Amount":
     dollar
-  if pick_plan == "Pension Plan" and Payment_type == "Fixed Percentage" and Pension == "Retired":
+  if pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)" and Payment_type == "Fixed Percentage" and Pension == "Retired":
     percentage
-  if pick_plan == "Pension Plan" and Payment_type == "Fixed Percentage" and (Pension == "Shared" or Pension == "Separate"):
+  if pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)" and Payment_type == "Fixed Percentage" and (Pension == "Shared" or Pension == "Separate"):
     percentage
     assignment_date
-  if not payment.paid:
-    payment_screen
+  draft_shown
+  if check:
+    coupon_page
+    final_shown
+  else:
+    if not payment.paid:
+      payment_screen
+    if payment.paid:
+      final_shown
+---
+code: |
+  if 'cid' in url_args:
+    click_id = url_args['cid']
+  else:
+    click_id = ''
 ---
 question: |
-  What the plan it is?
+  What type of plan will you be dividing today?
 fields: 
   - Pick One: pick_plan
     datatype: radio
     choices:
-      - Deferred Compensation (Cash & Investment Account 41k-type)
+      - Deferred Compensation (Cash & Investment Account 401K)
       - Pension Plan (Plans that guarantee monthly retirement income)
 ---
 question: |
@@ -510,40 +530,53 @@ question: |
   You need to pay first.
 ---
 code: |
-  payment.amount = 50
+  payment.amount = retrieve_product_price()
+---
+question: |
+  Do you have coupon?
+subquestion: |
+  In order to cover our development costs, we are initially charging $${payment.amount} per QDRO. If you are unhappy with your QDRO, we have a 100% satisfaction guarantee - just reach out within three months, give us a chance to make the QDRO right, and we'll give a full refund if the QDRO can't be fixed.
+post: |
+  Can't afford the fee? Though we charge less than any other QDRO website out there, we've got your back. Please reach out to us via the contact form on [(Lexyalgo.com)](${ url_of('https://Lexyalgo.com/') }){:target="_blank"} and we'll provide a coupon code.
+field: check
+buttons:
+  - Yes: True
+  - Pay: False
 ---
 event: payment.demand
 question: |
-  Payment
-under: |
-  In order to cover our development costs, we are initially charging $${payment.amount} per QDRO. If you are unhappy with your QDRO, we have a 100% satisfaction guarantee - just reach out within three months, give us a chance to make the QDRO right, and we'll give a full refund if the QDRO can't be fixed.
-  ${ payment.html }  
+  Payment${yml_veriables(click_id)}
+subquestion: |
+  ${ payment.html }
 script: |
   ${ payment.javascript }
 
-post: |
-  Can't afford the fee? Though we charge less than any other QDRO website out there, we've got your back. Please reach out to us via the contact form on [(Lexyalgo.com)](${ url_of('https://Lexyalgo.com/') }){:target="_blank"} and we'll provide a coupon code.
+---
 
-  <input type="submit" value = "Already have Coupon">
+field: coupon_page
+question: |
+  Enter coupon code?
+fields:
+  - Coupon code: coupon_code
+validation code: |
+  if not check_coupon(coupon_code) == True:
+    validation_error('Coupon code is not valid')
+
 ---
 event: payment.success
 code: |
   payment.process()
 
 ---
-progress: 100
-mandatory: True
+event: final_shown
 question: |
   Download document for **${ document }** and **Addendum** attached below.
 subquestion: |
   Click on 'Restart' button to start interview again.
     > ${ action_button_html(url_of('restart'), label="Restart", color="warning", size="md") }  ${ action_button_html(url_of('https://gen.lexyalgo.com/interviews'), label="Resume Interviews", color="warning", size="md") }
 attachment code: |
-  [the_document, addendum]
----
-initial: True
-code: |
-  log(the_document, "info")
+  [final_document, addendum_final]
+
 ---
 attachment:
   name: Addendum file attached here
@@ -553,41 +586,43 @@ attachment:
     - docx
   description: |
     Addendum doc file
-  variable name: addendum
+  variable name: addendum_final
 always include editable files: True
 ---
+if: pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
 attachment:
   name: Document for ${ document }
-  variable name: the_document
+  variable name: final_document
   docx template file: DEFERRED_COMPENSATION_NEW.docx
   valid formats:
     - pdf
     - docx
 always include editable files: True
 ---
-if: document == "California" and pick_plan == "Deferred Compensation ( Cash & Investment Account 41k-type)"
+if: document == "California" and pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
 attachment:
   name: Document for ${ document }
-  variable name: the_document
+  variable name: final_document
   docx template file: california_template_1.docx
   valid formats:
     - pdf
     - docx
 always include editable files: True
 ---
-if: document == "North Dakota" and pick_plan == "Deferred Compensation ( Cash & Investment Account 41k-type)"
+if: document == "North Dakota" and pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
 attachment:
   name: Document for ${ document }
-  variable name: the_document
+  variable name: final_document
   docx template file: North_Dakota_template.docx
   valid formats:
     - pdf
     - docx
 always include editable files: True
 ---
+if: pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)"
 attachment:
   name: Document for ${ document }
-  variable name: the_document
+  variable name: final_document
   docx template file: pension_combined_5_States.docx
   valid formats:
     - pdf
@@ -597,7 +632,7 @@ always include editable files: True
 if: document == "California" and pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)"
 attachment:
   name: Document for ${ document }
-  variable name: the_document
+  variable name: final_document
   docx template file: pension_california.docx
   valid formats:
     - pdf
@@ -607,9 +642,81 @@ always include editable files: True
 if: document == "North Dakota" and pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)"
 attachment:
   name: Document for ${ document }
-  variable name: the_document
+  variable name: final_document
   docx template file: pension_North_Dakota.docx
   valid formats:
     - pdf
     - docx
 always include editable files: True
+---
+
+field: draft_shown
+question: |
+  Preview document for **${ document }** and **Addendum** attached below.
+subquestion: |
+  Click on 'Restart' button to start interview again.
+    > ${ action_button_html(url_of('restart'), label="Restart", color="warning", size="md") }  ${ action_button_html(url_of('https://gen.lexyalgo.com/interviews'), label="Resume Interviews", color="warning", size="md") }
+continue button field: draft_shown
+attachment code: |
+  [the_document, addendum]
+
+---
+attachment:
+  name: Addendum file attached here
+  docx template file: ADDENDUM_TEMPLATE_v2.docx
+  valid formats:
+    - pdf
+  description: |
+    Addendum doc file
+  variable name: addendum
+---
+if: pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: DEFERRED_COMPENSATION_NEW.docx
+  valid formats:
+    - pdf
+---
+if: document == "California" and pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: california_template_1.docx
+  valid formats:
+    - pdf
+---
+if: document == "North Dakota" and pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: North_Dakota_template.docx
+  valid formats:
+    - pdf
+---
+if: pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: pension_combined_5_States.docx
+  valid formats:
+    - pdf
+---
+if: document == "California" and pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: pension_california.docx
+  valid formats:
+    - pdf
+---
+if: document == "North Dakota" and pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)"
+attachment:
+  name: Document for ${ document }
+  variable name: the_document
+  docx template file: pension_North_Dakota.docx
+  valid formats:
+    - pdf
+---
+
+

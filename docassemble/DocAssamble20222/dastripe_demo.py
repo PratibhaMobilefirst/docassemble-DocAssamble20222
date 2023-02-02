@@ -3,10 +3,10 @@ import json
 from docassemble.base.util import word, get_config, action_argument, DAObject, prevent_going_back
 from docassemble.base.standardformatter import BUTTON_STYLE, BUTTON_CLASS
 
-stripe.api_key = get_config('stripe secret key')
-stripe_secret_key = get_config('stripe secret key')
-stripe_public_key = get_config('stripe public key')
 
+stripe.api_key = get_config('stripe tsecret key')
+stripe_secret_key = get_config('stripe tsecret key')
+stripe_public_key = get_config('stripe tpublic key')
 
 __all__ = ['DAStripe']
 
@@ -22,7 +22,7 @@ class DAStripe(DAObject):
     if not hasattr(self, 'error_message'):
       self.error_message = "Please try another payment method."
     self.is_setup = False
-  
+
   def setup(self):
     float(self.amount)
     str(self.currency)

@@ -1,0 +1,23 @@
+metadata:
+  title: Exit or restart
+  documentation: "https://docassemble.org/docs/questions.html#special buttons"
+---
+mandatory: True
+question: |
+  your name?
+fields:
+  - name: name
+---
+event: hello
+question: We are all done.
+buttons:
+  - Exit: exit
+  - Restart: restart
+  - Continue: continue
+mandatory: True
+---
+mandatory: True
+question: |
+  your name?
+fields:
+  - last name: l_name
