@@ -3,9 +3,10 @@ import json
 from docassemble.base.util import word, get_config, action_argument, DAObject, prevent_going_back
 from docassemble.base.standardformatter import BUTTON_STYLE, BUTTON_CLASS
 
-stripe.api_key='sk_test_51LovdEBOgpkiH8jqPDEvxENEsdJcFEnIQM7TsN3o3NyWIltxAar84EAik9M9l7yt3qw65D41BVTKfHILfZOV9SPa00xq553MIg'
-stripe_secret_key="sk_test_51LovdEBOgpkiH8jqPDEvxENEsdJcFEnIQM7TsN3o3NyWIltxAar84EAik9M9l7yt3qw65D41BVTKfHILfZOV9SPa00xq553MIg"
-stripe_public_key="pk_test_51LovdEBOgpkiH8jqLOQYD5FFJui6fbpmamvAds7qXfp0raEmWAzyTLhl3fCotIa8RCcfyKzYt1F9r4CCaXklQ1vP00Py8RIfAO"
+stripe.api_key = get_config('stripe tsecret key')
+stripe_secret_key = get_config('stripe tsecret key')
+stripe_public_key = get_config('stripe tpublic key')
+
 
 __all__ = ['DAStripe']
 
@@ -21,7 +22,7 @@ class DAStripe(DAObject):
     if not hasattr(self, 'error_message'):
       self.error_message = "Please try another payment method."
     self.is_setup = False
-
+  
   def setup(self):
     float(self.amount)
     str(self.currency)
@@ -76,7 +77,7 @@ class DAStripe(DAObject):
       pass
     return """\
 <script>
-  var stripe = Stripe(""" + json.dumps("pk_test_51LovdEBOgpkiH8jqLOQYD5FFJui6fbpmamvAds7qXfp0raEmWAzyTLhl3fCotIa8RCcfyKzYt1F9r4CCaXklQ1vP00Py8RIfAO") + """);
+  var stripe = Stripe(""" + json.dumps(stripe_public_key) + """);
   var elements = stripe.elements();
   var style = {
     base: {
@@ -128,5 +129,4 @@ class DAStripe(DAObject):
   def process(self):
     self.result = action_argument('result')
     self.paid
-    prevent_going_back()
- 
+     

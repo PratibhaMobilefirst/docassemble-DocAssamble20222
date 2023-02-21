@@ -1,11 +1,10 @@
-global_var = False
+import stripe
+from docassemble.base.util import get_config
+
 def check_coupon(coupon_code):
-  global global_var
-  if coupon_code == "Free100":
-    global_var = True
-    return global_var
+  stripe.api_key = get_config('stripe tsecret key')
+  coupon = stripe.Coupon.retrieve(coupon_code)
+  if coupon:
+    return True
   else:
-    global_var = False
-    return global_var
-def get_coupon_response():
-  return global_var
+    return False
