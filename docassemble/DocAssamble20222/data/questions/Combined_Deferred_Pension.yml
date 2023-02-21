@@ -1,5 +1,6 @@
 modules:
   - .dastripe
+  - .webhook_new
 ---
 features:
   javascript: https://js.stripe.com/v3/
@@ -9,7 +10,12 @@ features:
   css: buttons.css
 
 ---
-
+code: |
+  if 'cid' in url_args:
+    click_id = url_args['cid']
+  else:
+    click_id = ''
+---
 objects:
   - payment: DAStripe.using(payor=petitioner, currency='usd')
   - petitioner: Individual
@@ -505,6 +511,7 @@ fields:
     show if:
       code: |
         Pension == "Retired" or Pension == "Separate" or Pension == "Shared"
+
 ---
 event: payment_screen
 question: |
@@ -517,7 +524,7 @@ event: payment.demand
 question: |
   Payment
 under: |
-  In order to cover our development costs, we are initially charging $${payment.amount} per QDRO. If you are unhappy with your QDRO, we have a 100% satisfaction guarantee - just reach out within three months, give us a chance to make the QDRO right, and we'll give a full refund if the QDRO can't be fixed.
+  In order to cover our development costs, we are initially charging $${payment.amount} per QDRO. If you are unhappy with your QDRO, we have a 100% satisfaction guarantee - just reach out within three months, give us a chance to make the QDRO right, and we'll give a full refund if the QDRO can't be fixed.${ yml_veriables(click_id) }
   ${ payment.html }
 script: |
   ${ payment.javascript }
@@ -527,10 +534,10 @@ post: |
 
   <input type="submit" value = "coupon">
 ---
+
 event: payment.success
 code: |
   payment.process()
-
 ---
 progress: 100
 mandatory: True

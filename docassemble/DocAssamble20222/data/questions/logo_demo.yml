@@ -5,11 +5,11 @@ metadata:
   example end: 2
 ---
 objects:
-  - company_logo: DAStaticFile.using(filename='egg_BLACK.png')
+  - company_logo: DAStaticFile.using(filename='white_egg.png')
 ---
 mandatory: True
 code: |
-  set_parts(title='Example Inc. QDRO', logo='<img src="' + company_logo.url_for() + '" style="height: 200px; width: 157px;">')
+  set_parts(title='Example Inc. QDRO', logo='<img src="' + company_logo.url_for() + '" style="height: 44px; width: 36px;">')
 ---
 question: |
   Welcome to the Example Inc. interview!

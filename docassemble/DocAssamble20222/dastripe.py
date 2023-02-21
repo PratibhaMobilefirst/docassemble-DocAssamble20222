@@ -128,4 +128,5 @@ class DAStripe(DAObject):
   def process(self):
     self.result = action_argument('result')
     self.paid
+    prevent_going_back()
  
