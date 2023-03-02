@@ -9,7 +9,7 @@ objects:
 ---
 mandatory: True
 code: |
-  set_parts(title='QDRO', logo='<img src="' + company_logo.url_for() + '" style="height: 50px; width: 40px;">')
+  set_parts(title='Example Inc. QDRO', logo='<img src="' + company_logo.url_for() + '" style="height: 44px; width: 36px;">')
 ---
 question: |
   Welcome to the Example Inc. interview!

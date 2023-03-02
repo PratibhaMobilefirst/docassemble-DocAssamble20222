@@ -6,5 +6,5 @@ code: |
     origin_of_interviewee = 'unknown'
 ---
 mandatory: True
-question: Your click id is ${ origin_of_interviewee }.
+question: Your click id is ${ origin_of_interviewee } .
 ---

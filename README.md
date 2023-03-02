@@ -1,8 +1,8 @@
-# docassemble.DocAssamble20222
+# docassemble.DocAssamble2022
 
 A docassemble extension.
 
 ## Author
 
-Pratibha B, pratibhab@gmail.com
+pratibha.mobilefirst@gmail.com
 

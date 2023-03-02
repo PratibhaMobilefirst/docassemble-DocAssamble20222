@@ -14,7 +14,7 @@ features:
 ---
 
 objects:
-  - payment: DAStripe.using(payor=petitioner, currency='usd')
+  - payment: DAStripe.using(payor=email_id, currency='usd')
   - petitioner: Individual
   - respondent: Individual
   - participant: Individual
@@ -29,6 +29,7 @@ code: |
 id: interview order
 mandatory: True
 code: |
+  email_id
   pick_plan
   if pick_plan == "Pension Plan (Plans that guarantee monthly retirement income)":
     Pension
@@ -96,6 +97,16 @@ code: |
     click_id = url_args['cid']
   else:
     click_id = ''
+---
+question: |
+  Let’s start with you.
+subquestion: |
+  We need your information to follow up with you for feedback on our QDRO machine and to provide our contact information in case you run into any issues with the retirement plan.
+fields:
+  - First Name: f_name
+  - Last Name: l_name
+  - E-mail: email_id
+    datatype: email  
 ---
 question: |
   What type of plan will you be dividing today?
@@ -735,5 +746,4 @@ attachment:
   valid formats:
     - pdf
 ---
-
 
