@@ -45,7 +45,7 @@ code: |
   if document == 'California' or document == 'Kansas':
     filing_party_address_info
   county
-  if document == 'California':
+  if document != 'Kansas' or document != 'Missouri' or document != 'New Jersey' or document != 'New York' or document != 'Iowa' or document != 'North Dakota':
     court
   case_number
   if document == 'North Dakota':
@@ -121,15 +121,58 @@ question: |
   In which state was the divorce?
 fields: 
   - Please select your state: document
-    datatype: radio
     choices:
+      - Alabama
+      - Alaska
+      - Arizona
+      - Arkansas
       - California
-      - North Dakota
+      - Colorado
+      - Connecticut
+      - District of Columbia
+      - Delaware
+      - Florida
+      - Georgia
+      - Hawaii
+      - Idaho
+      - Illinois
+      - Indiana
       - Iowa
       - Kansas
+      - Kentucky
+      - Louisiana
+      - Maine
+      - Maryland
+      - Massachusetts
+      - Michigan
+      - Minnesota
+      - Mississippi
       - Missouri
+      - Montana
+      - Nebraska
+      - Nevada
+      - New Hampshire
       - New Jersey
+      - New Mexico
       - New York 
+      - North Carolina
+      - North Dakota
+      - Oregon
+      - Ohio
+      - Oklahoma
+      - Pennsylvania
+      - Rhode Island
+      - South Carolina
+      - South Dakota
+      - Tennessee
+      - Texas
+      - Utah
+      - Vermont
+      - Virginia
+      - West Virginia
+      - Wisconsin
+      - Wyoming
+      - Washington
 ---
 question: |
   What is the filing party's role in the case?
@@ -620,7 +663,7 @@ attachment:
     - docx
 always include editable files: True
 ---
-if: document == "California" and pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
+if: (document == "California" or document == "Arizona" or document == "District of Columbia" or document == "Nevada" or document == "New Mexico" or document == "Oregon" or document == "Washington" )and pick_plan == "Deferred Compensation (Cash & Investment Account 401K)"
 attachment:
   name: Document for ${ document } QDRO
   variable name: final_document
