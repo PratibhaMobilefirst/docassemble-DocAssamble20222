@@ -317,7 +317,7 @@ fields:
 question: |
   Please select the employee (participant) spouse for this retirement plan.
 fields:
-  - Who is participant: who_is_participant
+  - Who is the participant: who_is_participant
     datatype: radio
     choices:
       - Petitioner-Plaintiff
@@ -373,7 +373,7 @@ fields:
 ---
 field: participant_info
 question: |
-  Please fill participant information.
+  Please fill in the Participant's information.
 fields:
   - Date Of Birth: participant.dob
     hint: MM/DD/YYYY
@@ -395,7 +395,7 @@ validation code: |
 ---
 field: participant_address_info
 question: |
-  Please fill participant address.
+  Please fill in the Participant's address.
 fields:
   - Street address: participant.address.address
     default: |
@@ -417,7 +417,7 @@ fields:
 ---
 field: alternate_payee_info
 question: |
-  Please fill alternate payee information.
+  Please fill in the Alternate Payee's information.
 fields:
   - Date Of Birth: alternate_payee.dob
     datatype: date
@@ -439,7 +439,7 @@ validation code: |
 ---
 field: alternate_payee_address_info
 question: |
-  Please fill alternate payee address.
+  Please fill in the Alternate Payee's address.
 fields:
   - Street address: alternate_payee.address.address
     default: |
@@ -524,7 +524,6 @@ fields:
       - Percentage, But Excluding Pre-Marital Balance
       - Percentage, But Excluding Pre-Marital Balance With Passive Growth
       - Percentage Of An Employee Stock Ownership Plan (ESOP)
-
 ---
 question: |
   Date of Marriage
@@ -537,7 +536,7 @@ question: |
 fields:
   - Dollar: dollar
     datatype: currency 
-continue button color: success
+continue button color: primary
 ---
 question: |
   What is the percentage that the non-employee spouse will receive? 
