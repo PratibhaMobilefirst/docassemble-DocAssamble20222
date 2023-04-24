@@ -73,3 +73,15 @@ button.btn.btn-da.btn-light[value="False"][name="Y2hlY2s"] {
 button.btn.btn-da.btn-secondary[value="True"][name="Y2hlY2s"] {
   background-color: #ffffff
 }
+
+button[name="dGFyZ2V0X3VybA"]{
+  display: none
+}
+
+.btn.btn-danger.btn-darevisit{
+  float: right
+}
+
+b.title {
+    color: red;
+}
