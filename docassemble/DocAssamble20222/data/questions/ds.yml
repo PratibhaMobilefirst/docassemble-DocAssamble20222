@@ -100,7 +100,7 @@ event: delete
 code: |
   if interview_list(
       action='delete',
-      filename=action_argument('filename'),
+      filename=action_argument('filename'), 
       session=action_argument('session')):
     log("Deleted interview", "success")
 ---

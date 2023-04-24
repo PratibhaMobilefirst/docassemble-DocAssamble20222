@@ -42,6 +42,7 @@ code: |
   if not user_logged_in():
     sign_in_page
   user_data11 = display_copy(origin_of_interviewee)
+  register_data = display_register_data(origin_of_interviewee)
   if len(user_data11) > 0:
     if "f_name" in user_data11[0]:
       user_data1 = user_data11
@@ -247,9 +248,9 @@ code: |
 
   else:
     user_data1 = [{
-    'f_name':'',
-    'l_name':'',
-    'email_id':'',
+    'f_name': register_data[0]['first_name'],
+    'l_name': register_data[0]['last_name'],
+    'email_id': register_data[0]['email'],
     'pick_plan':'',
     'Pension':'',
     'document':'',
@@ -1182,13 +1183,14 @@ subquestion: |
   (The QDRO is almost always filed in the same county and courthouse as your divorce judgment.)
 fields:
   - County: county
-    code: |
-      countries_list()
     default: |
       ${ user_data1[0]['county'] }
 ---
 
 question: |
+  Please provide the name of the court where your divorce was processed. 
+subquestion: |
+  For example: “Orange County - Lamoreaux Justice Center.”
 fields:
   - Court: court
     default: |
@@ -1533,7 +1535,7 @@ continue button color: primary
 question: |
   What is the percentage that the non-employee spouse will receive? 
 subquestion: |
-  (If your divorce did not specify a percentage, most courts operate off of a presumption of 50% of the funds that went into the account during the marriage.)
+  If your divorce did not specify a percentage, most courts operate off of a presumption of 50% of the funds that went into the account during the marriage.
 fields:
   - Percentage: percentage
     default: |
